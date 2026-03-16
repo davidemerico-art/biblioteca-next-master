@@ -114,7 +114,7 @@ export default function MieiLibri() {
                   <div className="text-[0.85rem] text-[var(--color-text-secondary)] flex items-center flex-wrap gap-1">
                     <span className="text-[var(--color-text-muted)]">Preso il {new Date(libro.dataPresa).toLocaleDateString()}</span>
                     <span className="mx-1 text-[var(--color-border-accent)] hidden sm:inline">|</span>
-                    <span className="text-[#9f805a]">Restituito il {new Date(libro.dataRestituzione).toLocaleDateString()}</span>
+                    <span className="text-[#9f805a]" >Restituito il {new Date(libro.dataRestituzione).toLocaleDateString()}</span>
                   </div>
                 </div>
                 <div>
