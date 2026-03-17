@@ -74,21 +74,21 @@ export default function Biblioteca() {
     }}
   />
 
-  {/* BOTTONE */}
-  <button
-    onClick={() => router.push("/crea-libro")}
-    style={{
-      padding: "10px 20px",
-      backgroundColor: "color: )",
-      color: "white",
-      border: "none",
-      borderRadius: "5px",
-      cursor: "pointer",
-      whiteSpace: "nowrap"
-    }}
-  >
-    Crea Nuovo Libro
-  </button>
+   {/* BOTTONE */}
+<button
+  onClick={() => router.push("/crea-libro")}
+  style={{
+    padding: "10px 20px",
+    backgroundColor: " b8860b;", 
+    color: "white",
+    border: "none",
+    borderRadius: "5px",
+    cursor: "pointer",
+    whiteSpace: "nowrap"
+  }}
+>
+  Crea Libro
+</button>
 </div>
 
       {/* GRID LIBRI */}

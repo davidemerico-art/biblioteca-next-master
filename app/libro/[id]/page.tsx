@@ -11,15 +11,14 @@ export default function BookDetail() {
 
   const [libro, setLibro] = useState<any>(null);
   const [recensioni, setRecensioni] = useState<any[]>([]);
-  const [utente, setUtente] = useState("");
+  const [nome, setNome] = useState("");
   const [testo, setTesto] = useState("");
   const [stelle, setStelle] = useState(5);
+  const [hover, setHover] = useState(0);
 
-  
   useEffect(() => {
     const creati = JSON.parse(localStorage.getItem("libriCreati") || "[]");
     const tutti = [...libri, ...creati];
-
     const trovato = tutti.find((l) => l.id === id);
     setLibro(trovato || null);
 
@@ -29,36 +28,32 @@ export default function BookDetail() {
     }
   }, [id]);
 
-
   const salvaRecensione = (e: any) => {
     e.preventDefault();
 
-    if (!utente || !testo) return;
-
     const nuova = {
       id: Date.now(),
-      user: utente,
+      user: nome,
       testo,
-      stelle
+      stelle,
     };
 
     const nuove = [...recensioni, nuova];
     setRecensioni(nuove);
-
     localStorage.setItem(`recensioni_${id}`, JSON.stringify(nuove));
 
-    setUtente("");
+    setNome("");
     setTesto("");
     setStelle(5);
+    setHover(0);
   };
 
-  
   if (!libro) {
     return (
       <div style={{ padding: "40px" }}>
         <h2>Libro non trovato</h2>
         <button onClick={() => router.push("/biblioteca")}>
-          ← Torna alla biblioteca
+          Torna alla biblioteca
         </button>
       </div>
     );
@@ -68,27 +63,18 @@ export default function BookDetail() {
     <div style={{ padding: "40px", maxWidth: "800px", margin: "auto" }}>
 
       <button onClick={() => router.push("/biblioteca")}>
-        ← Torna alla biblioteca
+        ← Torna indietro
       </button>
 
-      {/* COPERTINA INTERA */}
       {libro.img && (
-        <div
-          style={{
-            height: "500px",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            marginTop: "20px"
-          }}
-        >
+        <div style={{ height: "500px", display: "flex", justifyContent: "center" }}>
           <img
             src={libro.img}
             alt={libro.titolo}
             style={{
               maxWidth: "100%",
               maxHeight: "100%",
-              objectFit: "contain"
+              objectFit: "contain",
             }}
           />
         </div>
@@ -96,22 +82,13 @@ export default function BookDetail() {
 
       <h1>{libro.titolo}</h1>
       <h3>{libro.autore}</h3>
-      <p><strong>ISBN:</strong> {libro.isbn}</p>
-
-      {libro.fraseFamosa && (
-        <blockquote style={{ fontStyle: "italic", marginTop: "20px" }}>
-          "{libro.fraseFamosa}"
-        </blockquote>
-      )}
+      <p>ISBN: {libro.isbn}</p>
 
       <hr style={{ margin: "40px 0" }} />
 
-      {/* RECENSIONI */}
       <h2>Recensioni</h2>
 
-      {recensioni.length === 0 && (
-        <p>Nessuna recensione ancora.</p>
-      )}
+      {recensioni.length === 0 && <p>Nessuna recensione ancora.</p>}
 
       {recensioni.map((r) => (
         <div
@@ -120,17 +97,25 @@ export default function BookDetail() {
             border: "1px solid #ddd",
             padding: "10px",
             marginBottom: "10px",
-            borderRadius: "8px"
+            borderRadius: "8px",
           }}
         >
-          <strong>{r.user}</strong> — {r.stelle} ⭐
+          <strong>{r.user}</strong>
+
+          <div style={{ color: "#f5b301", fontSize: "18px" }}>
+            {[1, 2, 3, 4, 5].map((numero) => (
+              <span key={numero}>
+                {numero <= r.stelle ? "★" : "☆"}
+              </span>
+            ))}
+          </div>
+
           <p>{r.testo}</p>
         </div>
       ))}
 
       <hr style={{ margin: "30px 0" }} />
 
-      {/* FORM RECENSIONE */}
       <h3>Scrivi una recensione</h3>
 
       <form onSubmit={salvaRecensione}>
@@ -138,36 +123,55 @@ export default function BookDetail() {
         <input
           type="text"
           placeholder="Il tuo nome"
-          value={utente}
-          onChange={(e) => setUtente(e.target.value)}
+          value={nome}
+          onChange={(e) => setNome(e.target.value)}
           required
-          style={{ display: "block", marginBottom: "10px" }}
         />
+
+        <br /><br />
 
         <textarea
           placeholder="Scrivi la recensione"
           value={testo}
           onChange={(e) => setTesto(e.target.value)}
           required
-          style={{ width: "100%", marginBottom: "10px" }}
-        />
-
-        <input
-          type="number"
-          min="1"
-          max="5"
-          value={stelle}
-          onChange={(e) => setStelle(Number(e.target.value))}
+          style={{ width: "100%" }}
         />
 
         <br /><br />
+
+        {/* STELLE CLICCABILI */}
+        <div
+          style={{
+            display: "flex",
+            gap: "5px",
+            fontSize: "24px",
+            cursor: "pointer",
+          }}
+        >
+          {[1, 2, 3, 4, 5].map((numero) => (
+            <span
+              key={numero}
+              onClick={() => setStelle(numero)}
+              onMouseEnter={() => setHover(numero)}
+              onMouseLeave={() => setHover(0)}
+              style={{
+                color: numero <= (hover || stelle) ? "#f5b301" : "#ccc",
+                transition: "0.2s",
+              }}
+            >
+              ★
+            </span>
+          ))}
+        </div>
+
+        <br />
 
         <button type="submit">
           Invia recensione
         </button>
 
       </form>
-
     </div>
   );
 }
