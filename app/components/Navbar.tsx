@@ -55,7 +55,7 @@ export default function Navbar() {
         </Link>
 
         {/* voci di navigazione e user */}
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-6 overflow-x-auto md:overflow-visible whitespace-nowrap">
           {user ? (
             <>
               <Link href="/biblioteca" className={`${pathname === "/biblioteca" ? "text-[var(--color-accent-base)] font-semibold" : "text-[var(--color-text-secondary)] font-normal"}`}>
@@ -80,7 +80,7 @@ export default function Navbar() {
                   )}
                 </button>
                 
-                <div className="text-right text-[0.85rem]">
+                <div className="text-right text-[0.85rem] sm:hidden md:block">
                   <div className="text-[var(--color-text-primary)] font-medium">{user.nome}</div>
                   <div className="text-[var(--color-text-muted)]">{user.email}</div>
                 </div>

@@ -44,7 +44,7 @@ export default function Biblioteca() {
   );
 
   return (
-    <div style={{ padding: "40px" }}>
+    <div style={{ padding: "40px"  }}>
 
       <h1 style={{ marginBottom: "20px" }}>
         La Collezione
@@ -58,7 +58,7 @@ export default function Biblioteca() {
     justifyContent: "space-between",
     marginBottom: "30px",
     gap: "10px",
-    flexWrap: "wrap" // utile per mobile
+    flexWrap: "wrap" 
   }}
 >
   {/* BARRA DI RICERCA */}
@@ -85,6 +85,7 @@ export default function Biblioteca() {
     borderRadius: "5px",
     cursor: "pointer",
     whiteSpace: "nowrap"
+    
   }}
 >
   Crea Libro
