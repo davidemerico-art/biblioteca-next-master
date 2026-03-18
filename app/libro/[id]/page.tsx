@@ -65,6 +65,8 @@ export default function BookDetail() {
       <button onClick={() => router.push("/biblioteca")}>
         ← Torna indietro
       </button>
+<br /><br />
+
 
       {libro.img && (
         <div style={{ height: "500px", display: "flex", justifyContent: "center" }}>
