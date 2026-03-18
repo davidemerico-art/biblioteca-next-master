@@ -55,7 +55,7 @@ export default function Navbar() {
         </Link>
 
         {/* voci di navigazione e user */}
-        <div className="flex items-center gap-6 overflow-x-auto md:overflow-visible whitespace-nowrap">
+        <div className="flex items-center gap-6 ml-4 md:ml-8 overflow-x-auto md:overflow-visible whitespace-nowrap">
           {user ? (
             <>
               <Link href="/biblioteca" className={`${pathname === "/biblioteca" ? "text-[var(--color-accent-base)] font-semibold" : "text-[var(--color-text-secondary)] font-normal"}`}>
