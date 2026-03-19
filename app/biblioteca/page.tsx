@@ -50,10 +50,9 @@ export default function Biblioteca() {
 
   const prenota = (libro: Libro) => {
     const salvati = getFromStorage<Libro[]>("prenotati", []);
+    const giaPrenotato = salvati.some((l) => l?.id === libro.id);
 
-    const giàPrenotato = salvati.some((l) => l?.id === libro.id);
-
-    if (giàPrenotato) {
+    if (giaPrenotato) {
       alert("Hai già prenotato questo libro");
       return;
     }
@@ -73,10 +72,11 @@ export default function Biblioteca() {
   const libriFiltrati = useMemo(() => {
     const query = search.toLowerCase();
 
-    return libriTotali.filter((libro) =>
-      libro.titolo?.toLowerCase().includes(query) ||
-      libro.autore?.toLowerCase().includes(query) ||
-      String(libro.isbn).toLowerCase().includes(query)
+    return libriTotali.filter(
+      (libro) =>
+        libro.titolo?.toLowerCase().includes(query) ||
+        libro.autore?.toLowerCase().includes(query) ||
+        String(libro.isbn).toLowerCase().includes(query)
     );
   }, [search, libriTotali]);
 
@@ -84,7 +84,6 @@ export default function Biblioteca() {
     <div style={{ padding: "40px" }}>
       <h1 style={{ marginBottom: "20px" }}>La Collezione</h1>
 
-      {/* SEARCH + BUTTON */}
       <div
         style={{
           display: "flex",
@@ -124,7 +123,6 @@ export default function Biblioteca() {
         )}
       </div>
 
-      {/* GRID */}
       <div
         style={{
           display: "grid",
@@ -166,11 +164,9 @@ export default function Biblioteca() {
             >
               {(role === "user" || role === "admin") && (
                 <>
-                  <button onClick={() => prenota(libro)}>
-                    Prenota
-                  </button>
+                  <button onClick={() => prenota(libro)}>Prenota</button>
 
-                  <button onClick={() => router.push("/acquista")}>
+                  <button onClick={() => router.push(`/acquista?id=${libro.id}`)}>
                     Acquista
                   </button>
                 </>
@@ -178,15 +174,11 @@ export default function Biblioteca() {
 
               {role === "admin" && (
                 <>
-                  <button
-                    onClick={() => router.push(`/modifica/${libro.id}`)}
-                  >
+                  <button onClick={() => router.push(`/modifica/${libro.id}`)}>
                     Modifica
                   </button>
 
-                  <button onClick={() => eliminaLibro(libro.id)}>
-                    Elimina
-                  </button>
+                  <button onClick={() => eliminaLibro(libro.id)}>Elimina</button>
                 </>
               )}
             </div>
