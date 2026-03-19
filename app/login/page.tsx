@@ -15,18 +15,9 @@ export default function Login() {
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
-    if (!nome || !email) {
-      alert("Completare tutti i campi.");
-      return;
-    }
-
-    // controllo admin
-    if (role === "admin") {
-      if (adminCode !== "@admin9021") {
-        alert("Codice admin non valido");
-        return;
-      }
-    }
+   
+    
+    
 
     const user = { nome, email, role };
     localStorage.setItem("user", JSON.stringify(user));
@@ -116,35 +107,7 @@ export default function Login() {
             </select>
           </div>
 
-          <div>
-            <label>Nome</label>
-            <input
-              type="text"
-              value={nome}
-              onChange={(e) => setNome(e.target.value)}
-            />
-          </div>
-
-          <div>
-            <label>Email</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </div>
-
-          {/* campo admin */}
-          {role === "admin" && (
-            <div>
-              <label>Admin Code</label>
-              <input
-                type="password"
-                value={adminCode}
-                onChange={(e) => setAdminCode(e.target.value)}
-              />
-            </div>
-          )}
+          
 
           <button type="submit" style={{ marginTop: "20px" }}>
             Entra

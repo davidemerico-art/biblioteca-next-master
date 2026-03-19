@@ -64,6 +64,9 @@ export default function Navbar() {
               <Link href="/miei-libri" className={`${pathname === "/miei-libri" ? "text-[var(--color-accent-base)] font-semibold" : "text-[var(--color-text-secondary)] font-normal"}`}>
                 I Miei Libri
               </Link>
+              <Link href="/cronologia" className={`${pathname === "/cronologia" ? "text-[var(--color-accent-base)] font-semibold" : "text-[var(--color-text-secondary)] font-normal"}`}>
+                Cronologia
+              </Link>
               
               <div className="w-px h-6 bg-[var(--color-border)]"></div>
 

@@ -1,61 +1,88 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { libri } from "../../data/libri";
 import { useRouter } from "next/navigation";
 
-export default function Biblioteca() {
+type Libro = {
+  id: number;
+  titolo: string;
+  autore: string;
+  isbn: string | number;
+  img: string;
+};
 
+type User = {
+  role: "user" | "admin";
+};
+
+function getFromStorage<T>(key: string, fallback: T): T {
+  try {
+    const data = localStorage.getItem(key);
+    return data ? JSON.parse(data) : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+function setToStorage(key: string, value: any) {
+  localStorage.setItem(key, JSON.stringify(value));
+}
+
+export default function Biblioteca() {
   const [search, setSearch] = useState("");
-  const [libriTotali, setLibriTotali] = useState<any[]>([]);
-  const [role, setRole] = useState<"user" | "admin" | null>(null);
+  const [libriTotali, setLibriTotali] = useState<Libro[]>([]);
+  const [role, setRole] = useState<User["role"] | null>(null);
 
   const router = useRouter();
 
   useEffect(() => {
-    const creati = JSON.parse(localStorage.getItem("libriCreati") || "[]");
+    const creati = getFromStorage<Libro[]>("libriCreati", []);
     setLibriTotali([...libri, ...creati]);
 
-    const user = JSON.parse(localStorage.getItem("user") || "null");
+    const user = getFromStorage<User | null>("user", null);
     if (user) {
       setRole(user.role);
     } else {
       router.push("/");
     }
-  }, []);
+  }, [router]);
 
-  function prenota(libro: any) {
-    const salvati = JSON.parse(localStorage.getItem("prenotati") || "[]");
+  const prenota = (libro: Libro) => {
+    const salvati = getFromStorage<Libro[]>("prenotati", []);
 
-    if (salvati.find((l: any) => l && l.id === libro.id)) {
+    const giàPrenotato = salvati.some((l) => l?.id === libro.id);
+
+    if (giàPrenotato) {
       alert("Hai già prenotato questo libro");
       return;
     }
 
-    localStorage.setItem("prenotati", JSON.stringify([...salvati, libro]));
+    setToStorage("prenotati", [...salvati, libro]);
     alert("Libro prenotato");
-  }
+  };
 
-  function eliminaLibro(id: number) {
-    const creati = JSON.parse(localStorage.getItem("libriCreati") || "[]");
-    const aggiornati = creati.filter((libro: any) => libro.id !== id);
+  const eliminaLibro = (id: number) => {
+    const creati = getFromStorage<Libro[]>("libriCreati", []);
+    const aggiornati = creati.filter((libro) => libro.id !== id);
 
-    localStorage.setItem("libriCreati", JSON.stringify(aggiornati));
+    setToStorage("libriCreati", aggiornati);
     setLibriTotali([...libri, ...aggiornati]);
-  }
+  };
 
-  const libriFiltrati = libriTotali.filter(libro =>
-    libro.titolo?.toLowerCase().includes(search.toLowerCase()) ||
-    String(libro.isbn).toLowerCase().includes(search.toLowerCase()) ||
-    libro.autore?.toLowerCase().includes(search.toLowerCase())
-  );
+  const libriFiltrati = useMemo(() => {
+    const query = search.toLowerCase();
+
+    return libriTotali.filter((libro) =>
+      libro.titolo?.toLowerCase().includes(query) ||
+      libro.autore?.toLowerCase().includes(query) ||
+      String(libro.isbn).toLowerCase().includes(query)
+    );
+  }, [search, libriTotali]);
 
   return (
     <div style={{ padding: "40px" }}>
-
-      <h1 style={{ marginBottom: "20px" }}>
-        La Collezione
-      </h1>
+      <h1 style={{ marginBottom: "20px" }}>La Collezione</h1>
 
       {/* SEARCH + BUTTON */}
       <div
@@ -65,10 +92,9 @@ export default function Biblioteca() {
           justifyContent: "space-between",
           marginBottom: "30px",
           gap: "10px",
-          flexWrap: "wrap"
+          flexWrap: "wrap",
         }}
       >
-
         <input
           type="text"
           placeholder="Cerca per titolo, autore o ISBN..."
@@ -77,11 +103,10 @@ export default function Biblioteca() {
           style={{
             padding: "10px",
             width: "100%",
-            maxWidth: "400px"
+            maxWidth: "400px",
           }}
         />
 
-        {/* 👑 SOLO ADMIN */}
         {role === "admin" && (
           <button
             onClick={() => router.push("/crea-libro")}
@@ -92,13 +117,11 @@ export default function Biblioteca() {
               border: "none",
               borderRadius: "5px",
               cursor: "pointer",
-              whiteSpace: "nowrap"
             }}
           >
             Crea Libro
           </button>
         )}
-
       </div>
 
       {/* GRID */}
@@ -106,7 +129,7 @@ export default function Biblioteca() {
         style={{
           display: "grid",
           gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
-          gap: "20px"
+          gap: "20px",
         }}
       >
         {libriFiltrati.map((libro) => (
@@ -116,78 +139,60 @@ export default function Biblioteca() {
               border: "1px solid #ddd",
               padding: "10px",
               borderRadius: "10px",
-              textAlign: "center"
+              textAlign: "center",
             }}
           >
-
             <img
               src={libro.img}
               alt={libro.titolo}
               style={{
                 width: "100%",
                 borderRadius: "8px",
-                cursor: "pointer"
+                cursor: "pointer",
               }}
               onClick={() => router.push(`/libro/${libro.id}`)}
             />
 
-            <h3 style={{ marginTop: "10px" }}>
-              {libro.titolo}
-            </h3>
+            <h3 style={{ marginTop: "10px" }}>{libro.titolo}</h3>
 
             <div
               style={{
                 display: "flex",
                 gap: "10px",
                 marginTop: "10px",
-                justifyContent: "center"
+                justifyContent: "center",
+                flexWrap: "wrap",
               }}
             >
-
-              {/*  USER */}
-              {role === "user" && (
+              {(role === "user" || role === "admin") && (
                 <>
-                  <button
-                    onClick={() => prenota(libro)}
-                    style={{ padding: "8px 12px", cursor: "pointer" }}
-                  >
+                  <button onClick={() => prenota(libro)}>
                     Prenota
                   </button>
 
-                  <button
-                    onClick={() => router.push("/acquista")}
-                    style={{ padding: "8px 12px", cursor: "pointer" }}
-                  >
+                  <button onClick={() => router.push("/acquista")}>
                     Acquista
                   </button>
                 </>
               )}
 
-              {/* ADMIN */}
               {role === "admin" && (
                 <>
                   <button
                     onClick={() => router.push(`/modifica/${libro.id}`)}
-                    style={{ padding: "8px 12px", cursor: "pointer" }}
                   >
                     Modifica
                   </button>
 
-                  <button
-                    onClick={() => eliminaLibro(libro.id)}
-                    style={{ padding: "8px 12px", cursor: "pointer" }}
-                  >
+                  <button onClick={() => eliminaLibro(libro.id)}>
                     Elimina
                   </button>
                 </>
               )}
-
             </div>
-
           </div>
         ))}
       </div>
-
     </div>
   );
 }
