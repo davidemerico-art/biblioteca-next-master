@@ -65,8 +65,8 @@ export default function BookDetail() {
       <button onClick={() => router.push("/biblioteca")}>
         ← Torna indietro
       </button>
-<br /><br />
 
+      <br /><br />
 
       {libro.img && (
         <div style={{ height: "500px", display: "flex", justifyContent: "center" }}>
@@ -83,7 +83,20 @@ export default function BookDetail() {
       )}
 
       <h1>{libro.titolo}</h1>
-      <h3>{libro.autore}</h3>
+
+      {/* 👇 AUTORE CLICCABILE */}
+      <h3
+        onClick={() => router.push(`/autore/${encodeURIComponent(libro.autore)}`)}
+        style={{
+          cursor: "pointer",
+          color: "#6b4f2b",
+        }}
+        onMouseEnter={(e) => (e.currentTarget.style.textDecoration = "underline")}
+        onMouseLeave={(e) => (e.currentTarget.style.textDecoration = "none")}
+      >
+        {libro.autore}
+      </h3>
+
       <p>ISBN: {libro.isbn}</p>
 
       <hr style={{ margin: "40px 0" }} />

@@ -12,6 +12,7 @@ type Libro = {
   dataPresa?: string;
   dataRestituzione?: string;
   dataAcquisto?: string;
+  isbn?: string;
 };
 
 type User = {
@@ -35,6 +36,7 @@ export default function CronologiaPage() {
   const [prestiti, setPrestiti] = useState<Libro[]>([]);
   const [restituiti, setRestituiti] = useState<Libro[]>([]);
   const [acquisti, setAcquisti] = useState<Libro[]>([]);
+  const [search, setSearch] = useState("");
 
   /* ================= INIT ================= */
   useEffect(() => {
@@ -45,26 +47,34 @@ export default function CronologiaPage() {
       return;
     }
 
-    // PRESTITI
     const prenotati = getStorage<Libro[]>("prenotati", []);
     setPrestiti(prenotati.filter(Boolean));
 
-    // RESTITUITI
     const restituitiStorage = getStorage<Libro[]>("restituiti", []);
     setRestituiti(restituitiStorage.filter(Boolean));
 
-    // ACQUISTI
     const acquistiStorage = getStorage<Libro[]>("acquisti", []);
     setAcquisti(acquistiStorage.filter(Boolean));
   }, [router]);
 
-  /* ================= UI ================= */
+  /* ================= FILTRO ================= */
+  const matchLibro = (libro: Libro) => {
+    const query = search.toLowerCase();
+    return (
+      libro.titolo.toLowerCase().includes(query) 
+    );
+  };
 
+  const prestitiFiltrati = prestiti.filter(matchLibro);
+  const restituitiFiltrati = restituiti.filter(matchLibro);
+  const acquistiFiltrati = acquisti.filter(matchLibro);
+
+  /* ================= UI ================= */
   return (
     <div className="page-wrapper animate-fade-in">
 
       {/* HEADER */}
-      <div className="flex gap-4 items-center mb-8">
+      <div className="flex gap-4 items-center mb-6">
         <button
           onClick={() => router.push("/biblioteca")}
           className="btn-ghost btn-sm p-2 w-9 h-9 rounded-lg"
@@ -82,18 +92,29 @@ export default function CronologiaPage() {
         </div>
       </div>
 
+      {/*  BARRA DI RICERCA */}
+      <div className="mb-8">
+        <input
+          type="text"
+          placeholder="Cerca per titolo..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="w-full border rounded-lg p-3 outline-none focus:ring-2 focus:ring-[var(--color-accent-base)]"
+        />
+      </div>
+
       {/* ================= PRESTITI ================= */}
       <h2 className="text-[1.4rem] mb-4 border-b pb-2 font-serif">
-        Prestiti Attivi ({prestiti.length})
+        Prestiti Attivi ({prestitiFiltrati.length})
       </h2>
 
-      {prestiti.length === 0 ? (
+      {prestitiFiltrati.length === 0 ? (
         <div className="mb-10 text-gray-500 italic">
           Nessun prestito attivo
         </div>
       ) : (
         <div className="flex flex-col gap-3 mb-10">
-          {prestiti.map((libro) => (
+          {prestitiFiltrati.map((libro) => (
             <div
               key={libro.id}
               className="bg-white border p-4 rounded-lg flex justify-between"
@@ -115,16 +136,16 @@ export default function CronologiaPage() {
 
       {/* ================= RESTITUITI ================= */}
       <h2 className="text-[1.4rem] mb-4 border-b pb-2 font-serif">
-        Restituzioni ({restituiti.length})
+        Restituzioni ({restituitiFiltrati.length})
       </h2>
 
-      {restituiti.length === 0 ? (
+      {restituitiFiltrati.length === 0 ? (
         <div className="mb-10 text-gray-500 italic">
           Nessuna restituzione
         </div>
       ) : (
         <div className="flex flex-col gap-3 mb-10">
-          {restituiti.map((libro) => (
+          {restituitiFiltrati.map((libro) => (
             <div
               key={libro.id}
               className="bg-gray-50 border p-4 rounded-lg flex justify-between"
@@ -134,9 +155,7 @@ export default function CronologiaPage() {
                 <div className="text-sm text-gray-500">
                   Restituito il{" "}
                   {libro.dataRestituzione
-                    ? new Date(
-                        libro.dataRestituzione
-                      ).toLocaleDateString()
+                    ? new Date(libro.dataRestituzione).toLocaleDateString()
                     : "-"}
                 </div>
               </div>
@@ -151,16 +170,16 @@ export default function CronologiaPage() {
 
       {/* ================= ACQUISTI ================= */}
       <h2 className="text-[1.4rem] mb-4 border-b pb-2 font-serif">
-        Acquisti ({acquisti.length})
+        Acquisti ({acquistiFiltrati.length})
       </h2>
 
-      {acquisti.length === 0 ? (
+      {acquistiFiltrati.length === 0 ? (
         <div className="text-gray-500 italic">
           Nessun acquisto effettuato
         </div>
       ) : (
         <div className="flex flex-col gap-3">
-          {acquisti.map((libro) => (
+          {acquistiFiltrati.map((libro) => (
             <div
               key={libro.id}
               className="bg-white border p-4 rounded-lg flex justify-between"
@@ -170,9 +189,7 @@ export default function CronologiaPage() {
                 <div className="text-sm text-gray-500">
                   Acquistato il{" "}
                   {libro.dataAcquisto
-                    ? new Date(
-                        libro.dataAcquisto
-                      ).toLocaleDateString()
+                    ? new Date(libro.dataAcquisto).toLocaleDateString()
                     : "-"}
                 </div>
               </div>
@@ -187,4 +204,4 @@ export default function CronologiaPage() {
 
     </div>
   );
-}
+}  
