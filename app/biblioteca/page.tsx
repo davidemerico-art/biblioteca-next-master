@@ -13,6 +13,7 @@ type Libro = {
 };
 
 type User = {
+  id?: number; 
   role: "user" | "admin";
 };
 
@@ -94,6 +95,7 @@ export default function Biblioteca() {
           flexWrap: "wrap",
         }}
       >
+        {/* SINISTRA */}
         <input
           type="text"
           placeholder="Cerca per titolo, autore o ISBN..."
@@ -106,21 +108,72 @@ export default function Biblioteca() {
           }}
         />
 
-        {role === "admin" && (
-          <button
-            onClick={() => router.push("/crea-libro")}
-            style={{
-              padding: "10px 20px",
-              backgroundColor: "#b8860b",
-              color: "white",
-              border: "none",
-              borderRadius: "5px",
-              cursor: "pointer",
-            }}
-          >
-            Crea Libro
-          </button>
-        )}
+        {/* DESTRA */}
+        <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+          
+          {/* ADMIN */}
+          {role === "admin" && (
+            <>
+              <button
+                onClick={() => router.push("/crea-libro")}
+                style={{
+                  padding: "10px 20px",
+                  backgroundColor: "#b8860b",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "5px",
+                  cursor: "pointer",
+                }}
+              >
+                Crea Libro
+              </button>
+
+              <button
+                onClick={() => router.push("/cerca/utenti")}
+                style={{
+                  padding: "10px 20px",
+                  backgroundColor: "#b8860b",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "5px",
+                  cursor: "pointer",
+                }}
+              >
+                cerca utenti
+              </button>
+            </>
+          )}
+
+          {/* USER */}
+          {role === "user" && (
+            <span
+              onClick={() => {
+                const text = prompt("Scrivi un messaggio per l'admin:");
+                if (!text) return;
+
+                const currentUser = JSON.parse(localStorage.getItem("user") || "null");
+
+                const messages = JSON.parse(localStorage.getItem("messages") || "[]");
+                messages.push({
+                  from: "user",
+                  text,
+                  userId: currentUser?.id, 
+                  date: new Date().toISOString(),
+                });
+
+                localStorage.setItem("messages", JSON.stringify(messages));
+                alert("Messaggio inviato all'admin!");
+              }}
+              style={{
+                cursor: "pointer",
+                fontSize: "22px",
+              }}
+            >
+              ✉
+            </span>
+          )}
+
+        </div>
       </div>
 
       <div

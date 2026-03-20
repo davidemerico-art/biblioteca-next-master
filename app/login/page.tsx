@@ -102,7 +102,7 @@ export default function Login() {
               }
               style={{ padding: "10px", width: "100%" }}
             >
-              <option value="user">Utente</option>
+              <option value="user">User</option>
               <option value="admin">Admin</option>
             </select>
           </div>

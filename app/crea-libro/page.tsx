@@ -13,6 +13,7 @@ export default function CreaLibro() {
   // Dettagli autore
   const [bio, setBio] = useState("");
   const [eta, setEta] = useState<number | "">("");
+  const [stato, setStato] = useState("vivente/deceduto");
   const [imgAutore, setImgAutore] = useState("");
 
   const router = useRouter();
@@ -159,6 +160,13 @@ export default function CreaLibro() {
             <div className="form-group mb-5">
               <label>Età Autore</label>
               <input type="number" value={eta} onChange={(e) => setEta(Number(e.target.value))} />
+            </div>
+            <div className="form-group mb-5">
+              <label>Stato Autore</label>
+              <select value={stato} onChange={(e) => setStato(e.target.value)}>
+                <option value="vivente">Vivente</option>
+                <option value="deceduto">Deceduto</option>
+              </select>
             </div>
             <div className="form-group mb-5">
               <label>Immagine Autore</label>

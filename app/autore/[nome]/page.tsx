@@ -8,7 +8,7 @@ export default function AutorePage() {
   const nome = decodeURIComponent(params.nome as string);
  
 
-  // ✅ Unisce autori hardcoded + creati
+  // Unisce autori hardcoded + creati
   const autoriCreati = JSON.parse(localStorage.getItem("autoriCreati") || "[]");
   const tuttiAutori = [...autori, ...autoriCreati];
 
