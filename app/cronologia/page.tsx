@@ -194,7 +194,7 @@ export default function CronologiaPage() {
                 </div>
               </div>
 
-              <span className="text-xs px-2 py-1 bg-green-100 text-green-700 rounded-md">
+              <span className="text-xs px-2 py-1 bg-[#f3e8d7] text-[#9f805a] rounded-md">
                 Completato
               </span>
             </div>

@@ -2,84 +2,117 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
-export default function Home() {
+export default function Login() {
+  const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [role, setRole] = useState<"user" | "admin">("user");
+  const [adminCode, setAdminCode] = useState("");
+
   const router = useRouter();
 
-  const handleLogin = (e: React.FormEvent) => {
+  function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
-    if (!email || !password) {
-      alert("Compila tutti i campi per accedere");
-      return;
-    }
+   
+    
+    
 
-    // mock del login per sbloccare la navbar
-    const mockUser = { nome: email.split('@')[0], email };
-    localStorage.setItem("user", JSON.stringify(mockUser));
+    const user = { nome, email, role };
+    localStorage.setItem("user", JSON.stringify(user));
 
-    router.push("/biblioteca"); 
-  };
+    router.push("/biblioteca");
+  }
 
   return (
-    <div className="relative min-h-[calc(100vh-70px)] flex items-center justify-center overflow-hidden">
-      
-      {/* immagine di copertina hero */}
-      <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?q=80&w=2000&auto=format&fit=crop')] bg-cover bg-center -z-10 brightness-30 contrast-110"></div>
+    <div style={{ minHeight: "100vh", display: "flex" }}>
 
-      <div className="page-wrapper animate-fade-in flex flex-col items-center text-center z-10 w-full">
-        
-        <div className="max-w-3xl mb-10">
-          <h1 className="mb-4 drop-shadow-[0_4px_12px_rgba(0,0,0,0.8)]">
-            L'intero sapere umano, <br/>
-            <span className="text-[var(--color-accent-base)] italic">a portata di mano.</span>
-          </h1>
-          <p className="text-xl text-[var(--color-text-primary)] opacity-90 drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
-            Esplora la nostra vasta collezione di testi rari, classici intramontabili e novità editoriali. Accedi per iniziare.
+      {/*  COLONNA SINISTRA - IMMAGINE */}
+      <div
+        style={{
+          flex: 1,
+          backgroundImage:
+            "url('https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?q=80&w=1600&auto=format&fit=crop')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          borderRight: "1px solid var(--border)",
+          display: "flex",
+          alignItems: "flex-end",
+          padding: "60px",
+        }}
+      >
+        <div
+          className="glass"
+          style={{
+            padding: "32px",
+            borderRadius: "var(--radius-lg)",
+            maxWidth: "500px",
+          }}
+        >
+          <h2 style={{ fontSize: "2rem", marginBottom: "16px" }}>
+            L'inizio di un nuovo capitolo.
+          </h2>
+          <p
+            style={{
+              fontSize: "1.1rem",
+              color: "var(--text-primary)",
+              opacity: 0.9,
+            }}
+          >
+            "Una stanza senza libri è come un corpo senz'anima." <br /> — Cicerone
           </p>
         </div>
+      </div>
 
-        <div className="form-card glass animate-fade-in-up" style={{ animationDelay: "0.2s" }}>
-          <h2 className="text-center mb-2">Bentornato</h2>
-          <p className="text-center mb-8 text-[0.95rem]">
-            Inserisci le tue credenziali per accedere
-          </p>
+      {/*  COLONNA DESTRA - FORM */}
+      <div
+        style={{
+          flex: "0 0 500px",
+          background: "var(--bg)",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          padding: "60px",
+          position: "relative",
+        }}
+      >
+        <Link
+          href="/"
+          style={{
+            position: "absolute",
+            top: "40px",
+            right: "60px",
+          }}
+        >
+          Torna alla Home
+        </Link>
+
+        <h1>Accedi</h1>
+
+        <form onSubmit={handleSubmit}>
           
-          <form onSubmit={handleLogin} className="text-left w-full">
-            <div className="mb-5">
-              <label>Indirizzo Email</label>
-              <input
-                type="email"
-                placeholder="nome@esempio.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="bg-black/40 border-none"
-              />
-            </div>
-
-            <div className="mb-8">
-              <label>Password</label>
-              <input
-                type="password"
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="bg-black/40 border-none"
-              />
-            </div>
-
-            <button type="submit" className="w-full py-3.5 text-base">
-              Accedi al tuo account
-            </button>
-          </form>
-          
-          <div className="mt-6 text-center text-[0.85rem] text-[var(--color-text-secondary)]">
-            Non hai un account? <span className="text-[var(--color-accent-base)]">Contatta l'amministratore</span>
+          {/* tipo accesso */}
+          <div style={{ marginBottom: "20px" }}>
+            <label>Tipo accesso</label>
+            <select
+              value={role}
+              onChange={(e) =>
+                setRole(e.target.value as "user" | "admin")
+              }
+              style={{ padding: "10px", width: "100%" }}
+            >
+              <option value="user">User</option>
+              <option value="admin">Admin</option>
+            </select>
           </div>
-        </div>
 
+          
+
+          <button type="submit" style={{ marginTop: "20px" }}>
+            Entra
+          </button>
+        </form>
       </div>
     </div>
   );
