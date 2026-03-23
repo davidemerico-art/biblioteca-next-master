@@ -7,6 +7,7 @@ export default function CreaLibro() {
   const [titolo, setTitolo] = useState("");
   const [autore, setAutore] = useState("");
   const [isbn, setISBN] = useState("");
+  const [genere, setGenere] = useState("");
   const [frase, setFrase] = useState("");
   const [img, setImg] = useState("");
 
@@ -48,8 +49,8 @@ export default function CreaLibro() {
   const crea = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!titolo || !autore || !isbn) {
-      alert("Titolo, Autore e ISBN sono obbligatori");
+    if (!titolo || !autore || !isbn || !genere || !frase) {
+      alert("Titolo, Autore, ISBN, Genere e Frase Famosa sono obbligatori");
       return;
     }
 
@@ -64,7 +65,7 @@ export default function CreaLibro() {
 
     // Salva libro
     const salvatiLibri = JSON.parse(localStorage.getItem("libriCreati") || "[]");
-    const nuovoLibro = { id: Date.now(), titolo, autore, isbn, fraseFamosa: frase, img };
+    const nuovoLibro = { id: Date.now(), titolo, autore, isbn, genere, fraseFamosa: frase, img };
     const nuoviLibri = [...salvatiLibri, nuovoLibro];
     localStorage.setItem("libriCreati", JSON.stringify(nuoviLibri));
 
@@ -105,6 +106,7 @@ export default function CreaLibro() {
               <h3 className="whitespace-normal text-lg mb-1 text-[var(--color-text-primary)] font-serif">{titolo || "Titolo del libro"}</h3>
               <p className="text-[var(--color-text-secondary)] font-medium text-[0.95rem] mb-3">{autore || "Nome Autore"}</p>
               <div className="text-[0.75rem] uppercase tracking-wider text-[var(--color-text-muted)] mb-4">ISBN: {isbn || "---"}</div>
+                <div className="text-[0.75rem] uppercase tracking-wider text-[var(--color-text-muted)] mb-4">Genere: {genere || "---"}</div>
               <p className={`text-[0.9rem] italic text-[var(--color-text-secondary)] border-l-2 border-[var(--color-accent-base)] pl-3 mt-auto leading-relaxed transition-opacity ${frase ? 'opacity-100' : 'opacity-50'}`}>
                 "{frase || "Questa è una citazione dal libro..."}"
               </p>
@@ -137,7 +139,11 @@ export default function CreaLibro() {
               <label>ISBN *</label>
               <input required value={isbn} onChange={(e) => setISBN(e.target.value)} />
             </div>
-
+              {/* Genere */}
+              <div className="form-group mb-5">
+              <label>Genere *</label>
+              <input required value={genere} onChange={(e) => setGenere(e.target.value)} />
+            </div>
             {/* Immagine libro */}
             <div className="form-group mb-5">
               <label>Carica Immagine Copertina</label>

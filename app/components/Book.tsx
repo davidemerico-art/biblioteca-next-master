@@ -3,6 +3,7 @@ type BookProps = {
   titolo: string;
   autore: string;
   isbn: string;
+  genere: string;
   fraseFamosa: string;
   img: string;
   prenota: () => void;
@@ -13,6 +14,7 @@ export default function Book({
   titolo,
   autore,
   isbn,
+  genere,
   fraseFamosa,
   img,
   prenota,
@@ -42,6 +44,8 @@ export default function Book({
         </h3>
         <p className="text-[var(--color-text-secondary)] mb-3 text-[0.95rem] font-medium">{autore}</p>
         <div className="text-[0.75rem] uppercase tracking-wider text-[var(--color-text-muted)] mb-4">ISBN: {isbn}</div>
+        <div className="text-[0.75rem] uppercase tracking-wider text-[var(--color-text-muted)] mb-4">Genere: {genere}</div>
+        <div className="text-[0.75rem] uppercase tracking-wider text-[var(--color-text-muted)] mb-4"> frase famosa: {fraseFamosa} </div>
         <p className="text-[0.9rem] italic text-[var(--color-text-secondary)] border-l-2 border-[var(--color-accent-base)] pl-3 mt-auto leading-relaxed">
           "{fraseFamosa}"
         </p>

@@ -117,7 +117,7 @@ export default function CronologiaPage() {
           {prestitiFiltrati.map((libro) => (
             <div
               key={libro.id}
-              className="bg-white border p-4 rounded-lg flex justify-between"
+              className="bg-[#9f805a] border p-4 rounded-lg flex justify-between"
             >
               <div>
                 <h3 className="font-serif">{libro.titolo}</h3>
@@ -148,7 +148,7 @@ export default function CronologiaPage() {
           {restituitiFiltrati.map((libro) => (
             <div
               key={libro.id}
-              className="bg-gray-50 border p-4 rounded-lg flex justify-between"
+              className="bg-[#9f805a] border p-4 rounded-lg flex justify-between"
             >
               <div>
                 <h3 className="font-serif">{libro.titolo}</h3>
@@ -160,7 +160,7 @@ export default function CronologiaPage() {
                 </div>
               </div>
 
-              <span className="text-xs px-2 py-1 bg-[#f3e8d7] text-[#9f805a] rounded-md">
+              <span className="text-[0.7rem] px-2 py-1 rounded-md bg-[#f3e8d7] text-[#9f805a]">
                 Archiviato
               </span>
             </div>
@@ -182,7 +182,7 @@ export default function CronologiaPage() {
           {acquistiFiltrati.map((libro) => (
             <div
               key={libro.id}
-              className="bg-white border p-4 rounded-lg flex justify-between"
+              className="bg-[#9f805a] border p-4 rounded-lg flex justify-between"
             >
               <div>
                 <h3 className="font-serif">{libro.titolo}</h3>

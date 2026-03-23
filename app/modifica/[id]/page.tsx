@@ -10,6 +10,7 @@ export default function ModificaLibro() {
   const [titolo, setTitolo] = useState("");
   const [autore, setAutore] = useState("");
   const [isbn, setISBN] = useState("");
+  const [genere, setGenere] = useState("");
   const [frase, setFrase] = useState("");
   const [img, setImg] = useState("");
 
@@ -34,6 +35,7 @@ export default function ModificaLibro() {
       setTitolo(libro.titolo);
       setAutore(libro.autore);
       setISBN(libro.isbn);
+      setGenere(libro.genere || "");
       setFrase(libro.fraseFamosa);
       setImg(libro.img);
     }
@@ -65,15 +67,15 @@ export default function ModificaLibro() {
 
   const salva = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!titolo || !autore || !isbn) {
-      alert("Titolo, Autore e ISBN sono obbligatori");
+    if (!titolo || !autore || !isbn||!genere ||!frase) {
+      alert("Titolo, Autore, ISBN, Genere e Frase Famosa sono obbligatori");
       return;
     }
 
     // Salva libro
     const creati = JSON.parse(localStorage.getItem("libriCreati") || "[]");
     const aggiornati = creati.map((libro: any) =>
-      libro.id == id ? { ...libro, titolo, autore, isbn, fraseFamosa: frase, img } : libro
+      libro.id == id ? { ...libro, titolo, autore, isbn, genere, fraseFamosa: frase, img } : libro
     );
     localStorage.setItem("libriCreati", JSON.stringify(aggiornati));
 
@@ -122,6 +124,7 @@ export default function ModificaLibro() {
               <h3 className="whitespace-normal text-lg mb-1 text-[var(--color-text-primary)] font-serif">{titolo || "Titolo del libro"}</h3>
               <p className="text-[var(--color-text-secondary)] font-medium text-[0.95rem] mb-3">{autore || "Nome Autore"}</p>
               <div className="text-[0.75rem] uppercase tracking-wider text-[var(--color-text-muted)] mb-4">ISBN: {isbn || "---"}</div>
+                <div className="text-[0.75rem] uppercase tracking-wider text-[var(--color-text-muted)] mb-4">Genere: {genere || "---"}</div>
               <p className={`text-[0.9rem] italic text-[var(--color-text-secondary)] border-l-2 border-[var(--color-accent-base)] pl-3 mt-auto leading-relaxed transition-opacity ${frase ? 'opacity-100' : 'opacity-50'}`}>
                 "{frase || "Questa è una citazione dal libro..."}"
               </p>
@@ -157,12 +160,15 @@ export default function ModificaLibro() {
               <label>Carica Immagine Copertina</label>
               <input type="file" accept="image/*" onChange={handleImageUpload} />
             </div>
-
+<div className="form-group mb-5">
+              <label>Genere *</label>
+              <input required value={genere} onChange={(e) => setGenere(e.target.value)} />
+            </div>
             <div className="form-group mb-5">
               <label>Citazione o Frase Famosa</label>
               <textarea rows={3} value={frase} onChange={(e) => setFrase(e.target.value)} />
             </div>
-
+            
             <hr className="my-6 border-t border-[var(--color-border)]" />
             <h2 className="text-xl mb-4 font-serif">Dettagli Autore</h2>
             <div className="form-group mb-5">

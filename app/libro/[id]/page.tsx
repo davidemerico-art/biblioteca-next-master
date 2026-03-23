@@ -84,7 +84,7 @@ export default function BookDetail() {
 
       <h1>{libro.titolo}</h1>
 
-      {/* 👇 AUTORE CLICCABILE */}
+      {/*  AUTORE CLICCABILE */}
       <h3
         onClick={() => router.push(`/autore/${encodeURIComponent(libro.autore)}`)}
         style={{
@@ -98,6 +98,10 @@ export default function BookDetail() {
       </h3>
 
       <p>ISBN: {libro.isbn}</p>
+      <p>Genere: {libro.genere}</p>
+      <blockquote style={{ borderLeft: "4px solid #ccc", paddingLeft: "16px", fontStyle: "italic" }}>
+        "{libro.fraseFamosa}"
+      </blockquote>
 
       <hr style={{ margin: "40px 0" }} />
 
