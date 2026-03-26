@@ -19,8 +19,10 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{
             __html: `
               try {
-                if (localStorage.getItem('theme') === 'light' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: light)').matches)) {
-                  document.documentElement.classList.add('light-theme');
+                if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                  document.documentElement.classList.add('dark-theme');
+                } else {
+                  document.documentElement.classList.remove('dark-theme');
                 }
               } catch (e) {}
             `,

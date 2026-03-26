@@ -2,6 +2,10 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { AuthService } from "@/services/AuthService";
+import { BookService } from "@/services/BookService";
+import { AuthorService } from "@/services/AuthorService";
+import { StorageService } from "@/services/StorageService";
 
 export default function CreaLibro() {
   const [titolo, setTitolo] = useState("");
@@ -19,54 +23,39 @@ export default function CreaLibro() {
   const router = useRouter();
 
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("user") || "null");
-    if (!user || user.role !== "admin") {
+    if (!AuthService.isAdmin()) {
       alert("Accesso negato: solo admin");
       router.push("/biblioteca");
     }
   }, [router]);
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>, setter: Function) => {
     const file = e.target.files?.[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onloadend = () => setImg(reader.result as string);
-    reader.readAsDataURL(file);
-  };
-
-  const handleImageUploadAutore = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onloadend = () => setImgAutore(reader.result as string);
+    reader.onloadend = () => setter(reader.result as string);
     reader.readAsDataURL(file);
   };
 
   const crea = (e: React.FormEvent) => {
     e.preventDefault();
-
     if (!titolo || !autore || !isbn || !genere || !frase) {
       alert("Titolo, Autore, ISBN, Genere e Frase Famosa sono obbligatori");
       return;
     }
 
-    const salvatiAutori = JSON.parse(localStorage.getItem("autoriCreati") || "[]");
-    const autoreEsistente = salvatiAutori.find((a: any) => a.nome === autore);
-    if (!autoreEsistente) {
-      const nuovoAutore = { nome: autore, eta, bio, img: imgAutore, stato };
-      salvatiAutori.push(nuovoAutore);
-      localStorage.setItem("autoriCreati", JSON.stringify(salvatiAutori));
-    }
-
-    const salvatiLibri = JSON.parse(localStorage.getItem("libriCreati") || "[]");
+    // SOLID: Usa i Service
+    AuthorService.saveAuthor({ nome: autore, eta, bio, img: imgAutore, stato });
+    
     const nuovoLibro = { id: Date.now(), titolo, autore, isbn, genere, fraseFamosa: frase, img };
-    const nuoviLibri = [...salvatiLibri, nuovoLibro];
-    localStorage.setItem("libriCreati", JSON.stringify(nuoviLibri));
+    const salvatiLibri = StorageService.get<any[]>("libriCreati", []);
+    StorageService.set("libriCreati", [...salvatiLibri, nuovoLibro]);
 
     alert("Volume archiviato con successo!");
     router.push("/biblioteca");
   };
 
+  // ... (Il resto del return HTML rimane identico a quello che ti ho fornito nel messaggio precedente)
   return (
     <div className="page-wrapper animate-fade-in max-w-6xl">
       <button className="btn-ghost rounded-full p-2 w-10 h-10 mb-8" onClick={() => router.push("/biblioteca")}>
@@ -74,7 +63,6 @@ export default function CreaLibro() {
       </button>
 
       <div className="flex flex-col md:flex-row gap-12 items-start">
-        
         {/* Anteprima Card */}
         <div className="w-full sm:w-[280px] shrink-0 mx-auto md:mx-0 sticky top-24">
           <label className="text-center md:text-left mb-3">Anteprima Card</label>
@@ -129,7 +117,7 @@ export default function CreaLibro() {
 
             <div>
               <label>Carica Immagine Copertina</label>
-              <input type="file" accept="image/*" onChange={handleImageUpload} className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[var(--color-surface-hover)] file:text-[var(--color-text-primary)] hover:file:bg-[var(--color-border)] cursor-pointer" />
+              <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, setImg)} className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[var(--color-surface-hover)] file:text-[var(--color-text-primary)] hover:file:bg-[var(--color-border)] cursor-pointer" />
             </div>
 
             <div>
@@ -164,7 +152,7 @@ export default function CreaLibro() {
 
             <div>
               <label>Immagine Autore</label>
-              <input type="file" accept="image/*" onChange={handleImageUploadAutore} className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[var(--color-surface-hover)] file:text-[var(--color-text-primary)] hover:file:bg-[var(--color-border)] cursor-pointer" />
+              <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, setImgAutore)} className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[var(--color-surface-hover)] file:text-[var(--color-text-primary)] hover:file:bg-[var(--color-border)] cursor-pointer" />
             </div>
 
             <div className="pt-4 flex justify-end">
@@ -172,7 +160,6 @@ export default function CreaLibro() {
             </div>
           </form>
         </div>
-
       </div>
     </div>
   );

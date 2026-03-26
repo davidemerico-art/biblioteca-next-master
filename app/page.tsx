@@ -3,19 +3,21 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { AuthService } from "@/services/AuthService";
+import { Role } from "@/types";
 
 export default function Login() {
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
-  const [role, setRole] = useState<"user" | "admin">("user");
+  const [role, setRole] = useState<Role>("user");
 
   const router = useRouter();
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
-    const user = { nome, email, role };
-    localStorage.setItem("user", JSON.stringify(user));
+    // Deleghiamo la persistenza al Service (SOLID: SRP)
+    AuthService.login({ nome, email, role });
 
     router.push("/biblioteca");
   }
@@ -23,7 +25,7 @@ export default function Login() {
   return (
     <div className="min-h-screen flex bg-[var(--color-bg-base)]">
       
-      {/* Left Column - Image (Nascosta su mobile, visibile su schermi grandi) */}
+      {/* Left Column - Image */}
       <div 
         className="hidden lg:flex flex-1 relative bg-cover bg-center" 
         style={{ backgroundImage: "url('https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?q=80&w=1600&auto=format&fit=crop')" }}
@@ -53,7 +55,6 @@ export default function Login() {
           <p className="text-center text-[var(--color-text-secondary)] mb-10">Inserisci i tuoi dati per entrare in BiblioSphere.</p>
 
           <form onSubmit={handleSubmit} className="space-y-5">
-            
             <div>
               <label>Nome</label>
               <input 
@@ -80,7 +81,7 @@ export default function Login() {
               <label>Tipo accesso</label>
               <select
                 value={role}
-                onChange={(e) => setRole(e.target.value as "user" | "admin")}
+                onChange={(e) => setRole(e.target.value as Role)}
               >
                 <option value="user">User</option>
                 <option value="admin">Admin</option>
