@@ -31,9 +31,11 @@ export default function CronologiaPage() {
     return (
       libro.titolo.toLowerCase().includes(query) ||
       libro.autore.toLowerCase().includes(query) ||
-      (libro.isbn && libro.isbn.toString().toLowerCase().includes(query))
-    );
-  };
+      (libro.isbn && libro.isbn.toString().toLowerCase().includes(query))||
+      (libro.dataAcquisto && libro.dataAcquisto.toString().toLowerCase().includes(query) )||
+      libro.dataRestituzione?.toLocaleLowerCase().includes(query)||
+      libro.dataPresa?.toLocaleLowerCase().includes(query)
+  )};
 
   const prestitiFiltrati = prestiti.filter(matchLibro);
   const restituitiFiltrati = restituiti.filter(matchLibro);
