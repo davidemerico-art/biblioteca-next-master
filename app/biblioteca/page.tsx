@@ -82,78 +82,48 @@ export default function Biblioteca() {
   }, [search, libriTotali]);
 
   return (
-    <div style={{ padding: "40px" }}>
-      <h1 style={{ marginBottom: "20px" }}>La Collezione</h1>
+    <div className="page-wrapper animate-fade-in">
+      <h1 className="text-4xl font-bold tracking-tight mb-8">La Collezione</h1>
 
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          marginBottom: "30px",
-          gap: "10px",
-          flexWrap: "wrap",
-        }}
-      >
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
         {/* SINISTRA */}
-        <input
-          type="text"
-          placeholder="Cerca"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          style={{
-            padding: "10px",
-            width: "100%",
-            maxWidth: "400px",
-          }}
-        />
+        <div className="w-full max-w-md relative">
+          <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--color-text-muted)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+          <input
+            type="text"
+            placeholder="Cerca libro, autore o ISBN..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="pl-12 rounded-full bg-[var(--color-surface-hover)] border-transparent focus:bg-[var(--color-surface)]"
+          />
+        </div>
 
         {/* DESTRA */}
-        <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
-          
+        <div className="flex gap-3 items-center">
           {/* ADMIN */}
           {role === "admin" && (
             <>
-              <button
-                onClick={() => router.push("/crea-libro")}
-                style={{
-                  padding: "10px 20px",
-                  backgroundColor: "#b8860b",
-                  color: "white",
-                  border: "none",
-                  borderRadius: "5px",
-                  cursor: "pointer",
-                }}
-              >
+              <button onClick={() => router.push("/crea-libro")}>
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
                 Crea Libro
               </button>
-
-              <button
-                onClick={() => router.push("/cerca/utenti")}
-                style={{
-                  padding: "10px 20px",
-                  backgroundColor: "#b8860b",
-                  color: "white",
-                  border: "none",
-                  borderRadius: "5px",
-                  cursor: "pointer",
-                }}
-              >
-                cerca utenti
+              <button className="btn-ghost" onClick={() => router.push("/cerca/utenti")}>
+                Cerca Utenti
               </button>
             </>
           )}
 
           {/* USER */}
           {role === "user" && (
-            <span
+            <button
+              className="btn-ghost px-4 rounded-full"
               onClick={() => {
                 const text = prompt("Scrivi un messaggio per l'admin:");
                 if (!text) return;
 
                 const currentUser = JSON.parse(localStorage.getItem("user") || "null");
-
                 const messages = JSON.parse(localStorage.getItem("messages") || "[]");
+                
                 messages.push({
                   from: "user",
                   text,
@@ -164,79 +134,62 @@ export default function Biblioteca() {
                 localStorage.setItem("messages", JSON.stringify(messages));
                 alert("Messaggio inviato all'admin!");
               }}
-              style={{
-                cursor: "pointer",
-                fontSize: "22px",
-              }}
             >
-              ✉
-            </span>
+              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+              Contatta Admin
+            </button>
           )}
-
         </div>
       </div>
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
-          gap: "20px",
-        }}
-      >
+      {/* GRID LIBRI */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {libriFiltrati.map((libro) => (
-          <div
-            key={libro.id}
-            style={{
-              border: "1px solid #ddd",
-              padding: "10px",
-              borderRadius: "10px",
-              textAlign: "center",
-            }}
-          >
-            <img
-              src={libro.img}
-              alt={libro.titolo}
-              style={{
-                width: "100%",
-                borderRadius: "8px",
-                cursor: "pointer",
-              }}
-              onClick={() => router.push(`/libro/${libro.id}`)}
-            />
-
-            <h3 style={{ marginTop: "10px" }}>{libro.titolo}</h3>
-
-            <div
-              style={{
-                display: "flex",
-                gap: "10px",
-                marginTop: "10px",
-                justifyContent: "center",
-                flexWrap: "wrap",
-              }}
-            >
-              {(role === "user" || role === "admin") && (
-                <>
-                  <button onClick={() => prenota(libro)}>Prenota</button>
-
-                  <button onClick={() => router.push(`/acquista?id=${libro.id}`)}>
-                    Acquista
-                  </button>
-                </>
+          <div key={libro.id} className="card flex flex-col h-full group">
+            <div className="relative h-[280px] w-full overflow-hidden bg-[var(--color-surface-hover)]">
+              {libro.img ? (
+                <img
+                  src={libro.img}
+                  alt={libro.titolo}
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 cursor-pointer"
+                  onClick={() => router.push(`/libro/${libro.id}`)}
+                />
+              ) : (
+                <div className="flex h-full items-center justify-center text-[var(--color-text-muted)] cursor-pointer" onClick={() => router.push(`/libro/${libro.id}`)}>
+                  Nessuna Immagine
+                </div>
               )}
+            </div>
 
-              {role === "admin" && (
-                <>
-                  <button onClick={() => router.push(`/modifica/${libro.id}`)}>
-                    Modifica
-                  </button>
+            <div className="p-5 flex flex-col flex-1">
+              <h3 className="text-lg font-semibold tracking-tight text-[var(--color-text-primary)] mb-1 leading-tight line-clamp-2 cursor-pointer hover:text-[var(--color-accent-base)] transition-colors" onClick={() => router.push(`/libro/${libro.id}`)}>
+                {libro.titolo}
+              </h3>
+              <p className="text-sm text-[var(--color-text-secondary)] font-medium mb-4">{libro.autore}</p>
 
-                  <button onClick={() => eliminaLibro(libro.id)}>Elimina</button>
-                </>
-              )}
+              <div className="mt-auto grid grid-cols-2 gap-2">
+                {(role === "user" || role === "admin") && (
+                  <>
+                    <button className="btn-ghost btn-sm w-full py-2" onClick={() => prenota(libro)}>Prenota</button>
+                    <button className="btn-sm w-full py-2" onClick={() => router.push(`/acquista?id=${libro.id}`)}>Acquista</button>
+                  </>
+                )}
+
+                {role === "admin" && (
+                  <>
+                    <button className="btn-ghost btn-sm w-full py-2 col-span-1 mt-2" onClick={() => router.push(`/modifica/${libro.id}`)}>Modifica</button>
+                    <button className="bg-red-500/10 text-red-500 hover:bg-red-500/20 btn-sm w-full py-2 col-span-1 mt-2" onClick={() => eliminaLibro(libro.id)}>Elimina</button>
+                  </>
+                )}
+              </div>
             </div>
           </div>
         ))}
+        {libriFiltrati.length === 0 && (
+          <div className="col-span-full py-12 text-center text-[var(--color-text-muted)]">
+            Nessun libro trovato con questi criteri di ricerca.
+          </div>
+        )}
       </div>
     </div>
   );

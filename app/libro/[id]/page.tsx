@@ -30,15 +30,9 @@ export default function BookDetail() {
 
   const salvaRecensione = (e: any) => {
     e.preventDefault();
-
-    const nuova = {
-      id: Date.now(),
-      user: nome,
-      testo,
-      stelle,
-    };
-
+    const nuova = { id: Date.now(), user: nome, testo, stelle };
     const nuove = [...recensioni, nuova];
+    
     setRecensioni(nuove);
     localStorage.setItem(`recensioni_${id}`, JSON.stringify(nuove));
 
@@ -50,147 +44,114 @@ export default function BookDetail() {
 
   if (!libro) {
     return (
-      <div style={{ padding: "40px" }}>
-        <h2>Libro non trovato</h2>
-        <button onClick={() => router.push("/biblioteca")}>
-          Torna alla biblioteca
-        </button>
+      <div className="page-wrapper animate-fade-in text-center py-20">
+        <h2 className="text-2xl font-bold mb-4">Libro non trovato</h2>
+        <button onClick={() => router.push("/biblioteca")}>Torna alla biblioteca</button>
       </div>
     );
   }
 
   return (
-    <div style={{ padding: "40px", maxWidth: "800px", margin: "auto" }}>
-
-      <button onClick={() => router.push("/biblioteca")}>
-        ← Torna indietro
+    <div className="page-wrapper max-w-4xl animate-fade-in">
+      <button onClick={() => router.back()} className="btn-ghost rounded-full p-2 w-10 h-10 mb-8">
+        <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M19 12H5"></path><path d="M12 19l-7-7 7-7"></path></svg>
       </button>
 
-      <br /><br />
-
-      {libro.img && (
-        <div style={{ height: "500px", display: "flex", justifyContent: "center" }}>
-          <img
-            src={libro.img}
-            alt={libro.titolo}
-            style={{
-              maxWidth: "100%",
-              maxHeight: "100%",
-              objectFit: "contain",
-            }}
-          />
+      <div className="flex flex-col md:flex-row gap-10">
+        <div className="w-full md:w-1/3 shrink-0">
+          <div className="bg-[var(--color-surface-hover)] rounded-[24px] overflow-hidden shadow-sm border border-[var(--color-border)] aspect-[2/3] flex items-center justify-center">
+            {libro.img ? (
+              <img src={libro.img} alt={libro.titolo} className="w-full h-full object-cover" />
+            ) : (
+              <span className="text-[var(--color-text-muted)] font-medium">Copertina non disponibile</span>
+            )}
+          </div>
         </div>
-      )}
 
-      <h1>{libro.titolo}</h1>
+        <div className="flex flex-col flex-1 py-4">
+          <h1 className="text-4xl font-bold tracking-tight text-[var(--color-text-primary)] mb-2">{libro.titolo}</h1>
+          <h3 
+            onClick={() => router.push(`/autore/${encodeURIComponent(libro.autore)}`)}
+            className="text-xl text-[var(--color-accent-base)] font-medium mb-6 cursor-pointer hover:underline inline-block w-fit"
+          >
+            {libro.autore}
+          </h3>
 
-      {/*  AUTORE CLICCABILE */}
-      <h3
-        onClick={() => router.push(`/autore/${encodeURIComponent(libro.autore)}`)}
-        style={{
-          cursor: "pointer",
-          color: "#6b4f2b",
-        }}
-        onMouseEnter={(e) => (e.currentTarget.style.textDecoration = "underline")}
-        onMouseLeave={(e) => (e.currentTarget.style.textDecoration = "none")}
-      >
-        {libro.autore}
-      </h3>
-
-      <p>ISBN: {libro.isbn}</p>
-      <p>Genere: {libro.genere}</p>
-      <blockquote style={{ borderLeft: "4px solid #ccc", paddingLeft: "16px", fontStyle: "italic" }}>
-        "{libro.fraseFamosa}"
-      </blockquote>
-
-      <hr style={{ margin: "40px 0" }} />
-
-      <h2>Recensioni</h2>
-
-      {recensioni.length === 0 && <p>Nessuna recensione ancora.</p>}
-
-      {recensioni.map((r) => (
-        <div
-          key={r.id}
-          style={{
-            border: "1px solid #ddd",
-            padding: "10px",
-            marginBottom: "10px",
-            borderRadius: "8px",
-          }}
-        >
-          <strong>{r.user}</strong>
-
-          <div style={{ color: "#f5b301", fontSize: "18px" }}>
-            {[1, 2, 3, 4, 5].map((numero) => (
-              <span key={numero}>
-                {numero <= r.stelle ? "★" : "☆"}
-              </span>
-            ))}
+          <div className="flex gap-4 mb-6">
+            <span className="badge bg-[var(--color-surface-elev)] text-[var(--color-text-secondary)] border border-[var(--color-border)]">ISBN: {libro.isbn}</span>
+            <span className="badge bg-[var(--color-surface-elev)] text-[var(--color-text-secondary)] border border-[var(--color-border)]">Genere: {libro.genere}</span>
           </div>
 
-          <p>{r.testo}</p>
+          <div className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-2xl p-6 shadow-sm mt-4">
+            <h4 className="text-xs font-semibold uppercase tracking-wider text-[var(--color-text-muted)] mb-3">Citazione Famosa</h4>
+            <blockquote className="text-[17px] italic text-[var(--color-text-primary)] leading-relaxed">
+              "{libro.fraseFamosa}"
+            </blockquote>
+          </div>
         </div>
-      ))}
+      </div>
 
-      <hr style={{ margin: "30px 0" }} />
+      <hr />
 
-      <h3>Scrivi una recensione</h3>
-
-      <form onSubmit={salvaRecensione}>
-
-        <input
-          type="text"
-          placeholder="Il tuo nome"
-          value={nome}
-          onChange={(e) => setNome(e.target.value)}
-          required
-        />
-
-        <br /><br />
-
-        <textarea
-          placeholder="Scrivi la recensione"
-          value={testo}
-          onChange={(e) => setTesto(e.target.value)}
-          required
-          style={{ width: "100%" }}
-        />
-
-        <br /><br />
-
-        {/* STELLE CLICCABILI */}
-        <div
-          style={{
-            display: "flex",
-            gap: "5px",
-            fontSize: "24px",
-            cursor: "pointer",
-          }}
-        >
-          {[1, 2, 3, 4, 5].map((numero) => (
-            <span
-              key={numero}
-              onClick={() => setStelle(numero)}
-              onMouseEnter={() => setHover(numero)}
-              onMouseLeave={() => setHover(0)}
-              style={{
-                color: numero <= (hover || stelle) ? "#f5b301" : "#ccc",
-                transition: "0.2s",
-              }}
-            >
-              ★
-            </span>
-          ))}
+      <div className="flex flex-col lg:flex-row gap-12">
+        <div className="flex-1">
+          <h2 className="text-2xl font-bold tracking-tight mb-6">Recensioni</h2>
+          {recensioni.length === 0 && <p className="text-[var(--color-text-muted)]">Nessuna recensione ancora.</p>}
+          
+          <div className="space-y-4">
+            {recensioni.map((r) => (
+              <div key={r.id} className="bg-[var(--color-surface)] border border-[var(--color-border)] p-5 rounded-2xl shadow-sm">
+                <div className="flex justify-between items-start mb-2">
+                  <strong className="text-[15px] text-[var(--color-text-primary)]">{r.user}</strong>
+                  <div className="flex text-[var(--color-accent-base)] text-sm">
+                    {[1, 2, 3, 4, 5].map((num) => (
+                      <span key={num}>{num <= r.stelle ? "★" : "☆"}</span>
+                    ))}
+                  </div>
+                </div>
+                <p className="text-[14px] text-[var(--color-text-secondary)] leading-relaxed">{r.testo}</p>
+              </div>
+            ))}
+          </div>
         </div>
 
-        <br />
+        <div className="w-full lg:w-[400px] shrink-0">
+          <div className="bg-[var(--color-surface-elev)] border border-[var(--color-border)] rounded-[24px] p-8 shadow-sm sticky top-24">
+            <h3 className="text-xl font-semibold tracking-tight mb-6">Scrivi una recensione</h3>
+            <form onSubmit={salvaRecensione} className="space-y-4">
+              <div>
+                <label>Il tuo nome</label>
+                <input type="text" value={nome} onChange={(e) => setNome(e.target.value)} required placeholder="Nome e Cognome" />
+              </div>
+              
+              <div>
+                <label>Recensione</label>
+                <textarea value={testo} onChange={(e) => setTesto(e.target.value)} required placeholder="Cosa ne pensi?" rows={4} />
+              </div>
 
-        <button type="submit">
-          Invia recensione
-        </button>
+              <div>
+                <label>Valutazione</label>
+                <div className="flex gap-1 text-2xl cursor-pointer text-[var(--color-border-accent)]">
+                  {[1, 2, 3, 4, 5].map((num) => (
+                    <span 
+                      key={num} 
+                      onClick={() => setStelle(num)} 
+                      onMouseEnter={() => setHover(num)} 
+                      onMouseLeave={() => setHover(0)}
+                      className="transition-colors duration-200"
+                      style={{ color: num <= (hover || stelle) ? "var(--color-accent-base)" : "inherit" }}
+                    >
+                      ★
+                    </span>
+                  ))}
+                </div>
+              </div>
 
-      </form>
+              <button type="submit" className="w-full mt-2">Invia recensione</button>
+            </form>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

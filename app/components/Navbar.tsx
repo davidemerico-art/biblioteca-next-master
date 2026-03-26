@@ -19,7 +19,7 @@ export default function Navbar() {
     if (document.documentElement.classList.contains("light-theme")) {
       setIsLight(true);
     }
-  }, [pathname]); // refresh dopo navigazione
+  }, [pathname]);
 
   const handleLogout = () => {
     localStorage.removeItem("user");
@@ -39,17 +39,17 @@ export default function Navbar() {
     }
   };
 
-  if (pathname === "/login") return null; // nascondi intera navbar nella auth page
+  if (pathname === "/login" || pathname === "/") return null;
 
   return (
-    <nav className="bg-[var(--color-surface)] border-b border-[var(--color-border-accent)] px-6 py-4 sticky top-0 z-50 shadow-[var(--shadow-accent)]">
+    <nav className="glass px-6 py-4 sticky top-0 z-50 transition-all duration-300">
       <div className="max-w-7xl mx-auto flex justify-between items-center">
         {/* logo */}
         <Link href="/" className="flex items-center gap-2.5">
-          <div className="bg-[var(--color-accent-base)] w-9 h-9 rounded-lg flex items-center justify-center text-[#0f0e0d] font-bold text-lg">
+          <div className="bg-[var(--color-accent-base)] w-9 h-9 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-sm">
             B
           </div>
-          <span className="font-serif text-[1.4rem] font-semibold text-[var(--color-text-primary)]">
+          <span className="font-serif text-[1.4rem] font-semibold text-[var(--color-text-primary)] tracking-tight">
             Biblio<span className="text-[var(--color-accent-base)]">Sphere</span>
           </span>
         </Link>
@@ -58,13 +58,13 @@ export default function Navbar() {
         <div className="flex items-center gap-6 ml-4 md:ml-8 overflow-x-auto md:overflow-visible whitespace-nowrap">
           {user ? (
             <>
-              <Link href="/biblioteca" className={`${pathname === "/biblioteca" ? "text-[var(--color-accent-base)] font-semibold" : "text-[var(--color-text-secondary)] font-normal"}`}>
+              <Link href="/biblioteca" className={`${pathname === "/biblioteca" ? "text-[var(--color-text-primary)] font-semibold" : "text-[var(--color-text-secondary)] font-medium hover:text-[var(--color-text-primary)] transition-colors"}`}>
                 Biblioteca
               </Link>
-              <Link href="/miei-libri" className={`${pathname === "/miei-libri" ? "text-[var(--color-accent-base)] font-semibold" : "text-[var(--color-text-secondary)] font-normal"}`}>
+              <Link href="/miei-libri" className={`${pathname === "/miei-libri" ? "text-[var(--color-text-primary)] font-semibold" : "text-[var(--color-text-secondary)] font-medium hover:text-[var(--color-text-primary)] transition-colors"}`}>
                 I Miei Libri
               </Link>
-              <Link href="/cronologia" className={`${pathname === "/cronologia" ? "text-[var(--color-accent-base)] font-semibold" : "text-[var(--color-text-secondary)] font-normal"}`}>
+              <Link href="/cronologia" className={`${pathname === "/cronologia" ? "text-[var(--color-text-primary)] font-semibold" : "text-[var(--color-text-secondary)] font-medium hover:text-[var(--color-text-primary)] transition-colors"}`}>
                 Cronologia
               </Link>
               
@@ -83,9 +83,9 @@ export default function Navbar() {
                   )}
                 </button>
                 
-                <div className="text-right text-[0.85rem] sm:hidden md:block">
-                  <div className="text-[var(--color-text-primary)] font-medium">{user.nome}</div>
-                  <div className="text-[var(--color-text-muted)]">{user.email}</div>
+                <div className="text-right text-[0.85rem] hidden md:block">
+                  <div className="text-[var(--color-text-primary)] font-semibold tracking-tight">{user.nome}</div>
+                  <div className="text-[var(--color-text-muted)] text-xs">{user.email}</div>
                 </div>
                 <button 
                   onClick={handleLogout} 
@@ -101,7 +101,7 @@ export default function Navbar() {
               </div>
             </>
           ) : (
-            <Link href="/login" className="text-[var(--color-text-secondary)] font-normal">
+            <Link href="/login" className="text-[var(--color-text-primary)] font-medium hover:underline">
               Accedi
             </Link>
           )}

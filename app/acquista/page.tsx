@@ -34,7 +34,6 @@ function setToStorage(key: string, value: any) {
 }
 
 export default function AcquistaPage() {
-  const [metodo, setMetodo] = useState("");
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -42,7 +41,6 @@ export default function AcquistaPage() {
     e.preventDefault();
 
     const user = getFromStorage<User | null>("user", null);
-
     if (!user) {
       router.push("/");
       return;
@@ -57,7 +55,6 @@ export default function AcquistaPage() {
     }
 
     const libroTrovato = libri.find((libro) => libro.id === id);
-
     if (!libroTrovato) {
       alert("Libro non trovato");
       return;
@@ -79,58 +76,32 @@ export default function AcquistaPage() {
     };
 
     setToStorage("acquisti", [...acquistiSalvati, nuovoAcquisto]);
-
-    alert("Pagamento elaborato con successo! Grazie per il tuo acquisto.");
+    alert("Pagamento elaborato con successo tramite Apple Pay!");
     router.push("/miei-libri");
   };
 
   return (
-    <div className="page-wrapper animate-fade-in flex flex-col items-center justify-start min-h-[80vh]">
-      <div className="form-card max-w-[600px] w-full">
-        <button
-          type="button"
-          className="btn-ghost btn-sm mb-6 px-2 py-1.5"
-          onClick={() => router.back()}
-        >
-          <svg
-            width="18"
-            height="18"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <line x1="19" y1="12" x2="5" y2="12"></line>
-            <polyline points="12 19 5 12 12 5"></polyline>
-          </svg>
-          Indietro
-        </button>
-
-        <h1 className="text-3xl mb-2 font-serif text-[var(--color-text-primary)]">
+    <div className="page-wrapper flex flex-col items-center justify-center min-h-[80vh] animate-fade-in">
+      <div className="form-card max-w-[500px] w-full text-center">
+        <div className="w-16 h-16 bg-black text-white rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-md">
+          {/* Semplice icona Apple Pay finta */}
+          <svg width="32" height="32" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14h-2v-4H7v-2h2V8c0-1.1.9-2 2-2h3v2h-3v2h3v2h-3v4z"/></svg>
+        </div>
+        
+        <h1 className="text-3xl font-bold tracking-tight mb-2 text-[var(--color-text-primary)]">
           Checkout
         </h1>
+        <p className="text-[var(--color-text-secondary)] mb-8">
+          Completa l'acquisto del volume in modo sicuro.
+        </p>
 
         <form onSubmit={handleSubmit} className="animate-fade-in-up">
-          <div className="flex justify-end">
-            <button type="submit" className="px-7 py-3.5 text-[1.05rem]">
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-              </svg>
-              Paga in Sicurezza
-            </button>
-          </div>
+          <button type="submit" className="w-full py-4 text-[17px] bg-black hover:bg-gray-800 text-white rounded-full">
+            Acquista con Apple Pay
+          </button>
+          <button type="button" onClick={() => router.back()} className="btn-ghost w-full py-4 text-[17px] mt-3">
+            Annulla
+          </button>
         </form>
       </div>
     </div>
