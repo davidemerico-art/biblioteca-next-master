@@ -45,6 +45,8 @@
     box-sizing: border-box;
     margin: 0;
     padding: 0;
+    /* Ottimizzazione Touch: Rimuove l'evidenziazione blu di default sui dispositivi mobile */
+    -webkit-tap-highlight-color: transparent;
   }
   
   html {
@@ -65,16 +67,16 @@
     font-family: var(--font-serif);
     color: var(--color-text-primary);
     line-height: 1.2;
-    letter-spacing: -0.02em; /* Tipico del design Apple */
+    letter-spacing: -0.02em;
   }
 
   p {
     color: var(--color-text-secondary);
   }
   
-  /* Shared Base Element Styles */
+  /* Shared Base Element Styles - Min-height 44px for Apple HIG Touch Targets */
   input, select, textarea {
-    @apply w-full px-4 py-3 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl text-[var(--color-text-primary)] font-sans text-[15px] outline-none transition-all duration-200 shadow-sm;
+    @apply w-full px-4 py-3 min-h-[44px] bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl text-[var(--color-text-primary)] font-sans text-[16px] outline-none transition-all duration-200 shadow-sm appearance-none;
   }
 
   input::placeholder, textarea::placeholder {
@@ -90,7 +92,8 @@
   }
 
   button {
-    @apply inline-flex items-center justify-center gap-2 px-6 py-3 bg-[var(--color-accent-base)] text-white border-none rounded-full font-sans text-[15px] font-semibold tracking-wide cursor-pointer transition-transform duration-200 whitespace-nowrap;
+    /* Touch target ottimizzato per dita (min-h-[44px]) */
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 min-h-[44px] bg-[var(--color-accent-base)] text-white border-none rounded-full font-sans text-[15px] font-semibold tracking-wide cursor-pointer transition-transform duration-200 whitespace-nowrap;
   }
 
   button:hover {
@@ -98,7 +101,7 @@
   }
 
   button:active {
-    @apply scale-95; /* Effetto click Apple */
+    @apply scale-95;
   }
 
   .btn-ghost {
@@ -106,7 +109,7 @@
   }
 
   .btn-sm {
-    @apply px-3.5 py-1.5 text-xs;
+    @apply px-4 py-2 text-[14px] min-h-[38px]; /* Leggermente più piccolo, ma ancora facile da toccare */
   }
 
   hr {
@@ -116,37 +119,42 @@
 
 @layer components {
   .page-wrapper {
-    @apply max-w-7xl mx-auto px-6 py-10;
+    @apply max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-10;
   }
 
-  /* Effetto vetro smerigliato Apple */
   .glass {
-    @apply bg-[var(--color-surface)]/70 backdrop-blur-xl border border-[var(--color-border)]/50 supports-[backdrop-filter]:bg-[var(--color-surface)]/60;
+    @apply bg-[var(--color-surface)]/75 backdrop-blur-2xl border border-[var(--color-border)]/50 supports-[backdrop-filter]:bg-[var(--color-surface)]/60;
   }
   
   .form-card {
-    @apply bg-[var(--color-surface)] border border-[var(--color-border)]/50 rounded-[24px] p-10 max-w-xl w-full shadow-[0_8px_30px_rgba(0,0,0,0.04)];
+    @apply bg-[var(--color-surface)] border border-[var(--color-border)]/50 rounded-[24px] p-6 sm:p-10 max-w-xl w-full shadow-[0_8px_30px_rgba(0,0,0,0.04)];
   }
 
   .card {
-    @apply bg-[var(--color-surface)] border border-[var(--color-border)]/50 rounded-2xl overflow-hidden transition-all duration-300 w-full sm:w-[220px] shrink-0 shadow-[0_4px_24px_rgba(0,0,0,0.04)];
+    @apply bg-[var(--color-surface)] border border-[var(--color-border)]/50 rounded-[20px] overflow-hidden transition-all duration-300 w-full sm:w-[220px] shrink-0 shadow-[0_4px_24px_rgba(0,0,0,0.04)];
   }
 
-  .card:hover {
-    @apply -translate-y-1 shadow-[0_12px_40px_rgba(0,0,0,0.08)];
+  /* Su mobile niente hover lifting per evitare comportamenti strani col touch */
+  @media (hover: hover) {
+    .card:hover {
+      @apply -translate-y-1 shadow-[0_12px_40px_rgba(0,0,0,0.08)];
+    }
   }
 
   .badge {
-    @apply inline-block px-3 py-1 rounded-full text-xs font-semibold tracking-wide uppercase;
+    @apply inline-block px-3 py-1 rounded-full text-[11px] sm:text-xs font-semibold tracking-wide uppercase;
   }
 }
 
 @layer utilities {
   .animate-fade-in {
-    animation: fadeIn 0.5s ease forwards;
+    animation: fadeIn 0.4s ease forwards;
   }
   .animate-fade-in-up {
-    animation: fadeInUp 0.6s ease forwards;
+    animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  .animate-slide-down {
+    animation: slideDown 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   }
 }
 
@@ -158,6 +166,11 @@
 @keyframes fadeIn {
   from { opacity: 0; }
   to   { opacity: 1; }
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 ::-webkit-scrollbar { width: 6px; }
