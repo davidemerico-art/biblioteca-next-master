@@ -98,7 +98,7 @@ export default function Biblioteca() {
         {/* SINISTRA */}
         <input
           type="text"
-          placeholder="Cerca per titolo, autore o ISBN..."
+          placeholder="Cerca"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           style={{

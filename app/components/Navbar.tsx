@@ -101,8 +101,8 @@ export default function Navbar() {
               </div>
             </>
           ) : (
-            <Link href="/login">
-              <button>Accedi</button>
+            <Link href="/login" className="text-[var(--color-text-secondary)] font-normal">
+              Accedi
             </Link>
           )}
         </div>

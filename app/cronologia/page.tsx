@@ -62,6 +62,9 @@ export default function CronologiaPage() {
     const query = search.toLowerCase();
     return (
       libro.titolo.toLowerCase().includes(query) 
+      || libro.autore.toLowerCase().includes(query)
+      || (libro.isbn && libro.isbn.toString().toLowerCase().includes(query))
+      
     );
   };
 
@@ -96,7 +99,7 @@ export default function CronologiaPage() {
       <div className="mb-8">
         <input
           type="text"
-          placeholder="Cerca per titolo..."
+          placeholder="Cerca "
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="w-full border rounded-lg p-3 outline-none focus:ring-2 focus:ring-[var(--color-accent-base)]"
@@ -160,7 +163,7 @@ export default function CronologiaPage() {
                 </div>
               </div>
 
-              <span className="text-[0.7rem] px-2 py-1 rounded-md bg-[#f3e8d7] text-[#9f805a]">
+              <span className="text-xs px-2 py-1 bg-[#f3e8d7] text-[#9f805a] rounded-md">
                 Archiviato
               </span>
             </div>
