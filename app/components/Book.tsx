@@ -1,3 +1,5 @@
+import { useRouter } from "next/navigation";
+
 type BookProps = {
   id: number;
   titolo: string;
@@ -14,13 +16,18 @@ type BookProps = {
 };
 
 export default function Book({ 
-  titolo, autore, isbn, genere, fraseFamosa, img, prenota, acquista, isAdmin, modifica, elimina 
+  id, titolo, autore, isbn, genere, fraseFamosa, img, prenota, acquista, isAdmin, modifica, elimina 
 }: BookProps) {
+  const router = useRouter();
+
   return (
     <div className="card animate-fade-in-up flex flex-col h-full group">
       
-      {/* Immagine */}
-      <div className="relative overflow-hidden shrink-0 h-[240px] sm:h-[280px] bg-[var(--color-surface-hover)]">
+      {/* Immagine (Cliccabile per aprire il dettaglio del libro) */}
+      <div 
+        className="relative overflow-hidden shrink-0 h-[240px] sm:h-[280px] bg-[var(--color-surface-hover)] cursor-pointer"
+        onClick={() => router.push(`/libro/${id}`)}
+      >
         {img ? (
           <img src={img} alt={titolo} className="w-full h-full object-cover transition-transform duration-500 sm:group-hover:scale-105" />
         ) : (
@@ -33,10 +40,29 @@ export default function Book({
 
       {/* Contenuto Testuale */}
       <div className="flex flex-col flex-1 p-4 sm:p-5">
-        <h3 className="text-[17px] font-semibold tracking-tight mb-1 text-[var(--color-text-primary)] line-clamp-1" title={titolo}>{titolo}</h3>
-        <p className="text-[var(--color-text-secondary)] mb-3 text-[14px] font-medium">{autore}</p>
         
-        {/* FIX: Usiamo flex-wrap invece di overflow-x-auto per non mostrare mai scrollbar */}
+        {/* Titolo (Cliccabile) */}
+        <h3 
+          className="text-[17px] font-semibold tracking-tight mb-1 text-[var(--color-text-primary)] line-clamp-1 cursor-pointer hover:text-[var(--color-accent-base)] transition-colors" 
+          title={titolo}
+          onClick={() => router.push(`/libro/${id}`)}
+        >
+          {titolo}
+        </h3>
+        
+        {/* Autore (Cliccabile per aprire la scheda dell'autore) */}
+        <p 
+          className="text-[var(--color-text-secondary)] mb-3 text-[14px] font-medium cursor-pointer hover:text-[var(--color-accent-base)] hover:underline w-fit transition-colors"
+          onClick={(e) => {
+            e.stopPropagation(); // Evita che il click si propaghi ad altri elementi
+            router.push(`/autore/${encodeURIComponent(autore)}`);
+          }}
+          title={`Scopri di più su ${autore}`}
+        >
+          {autore}
+        </p>
+        
+        {/* Badge (Senza scrollbar) */}
         <div className="flex flex-wrap gap-2 mb-3">
           <span className="badge bg-[var(--color-surface-elev)] text-[var(--color-text-muted)] border border-[var(--color-border)]">ISBN: {isbn}</span>
           <span className="badge bg-[var(--color-surface-elev)] text-[var(--color-text-muted)] border border-[var(--color-border)]">{genere}</span>
@@ -45,14 +71,14 @@ export default function Book({
         <p className="text-[13px] text-[var(--color-text-secondary)] leading-relaxed line-clamp-3 mt-auto italic">"{fraseFamosa}"</p>
       </div>
 
-      {/* Bottoni (sempre all'interno della Card in fondo) */}
+      {/* Bottoni di Azione */}
       <div className="flex flex-col p-4 sm:p-5 pt-0 gap-2 mt-auto">
         <div className="flex flex-row gap-2">
           <button className="btn-ghost btn-sm flex-1 py-3 sm:py-2" onClick={prenota}>Prenota</button>
           <button className="btn-sm flex-1 py-3 sm:py-2" onClick={acquista}>Acquista</button>
         </div>
         
-        {/* FIX: I bottoni Admin ora vivono sicuri qui dentro */}
+        {/* Bottoni Admin (Visibili solo se l'utente è admin) */}
         {isAdmin && modifica && elimina && (
           <div className="flex flex-row gap-2 pt-3 mt-1 border-t border-[var(--color-border)]">
             <button className="btn-ghost btn-sm flex-1 py-3 sm:py-2" onClick={modifica}>Modifica</button>
