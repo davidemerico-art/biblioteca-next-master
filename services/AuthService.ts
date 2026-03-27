@@ -1,9 +1,13 @@
 import { User } from "../types";
 import { StorageService } from "./StorageService";
+import { UserService } from "./UserService";
 
 export class AuthService {
   static login(user: User): void {
-    StorageService.set("user", user);
+
+    const registeredUser = UserService.saveUser(user);
+    
+    StorageService.set("user", registeredUser);
   }
 
   static logout(): void {

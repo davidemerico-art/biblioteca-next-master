@@ -3,6 +3,7 @@ export type Role = "user" | "admin";
 export interface User {
   id?: number;
   nome: string;
+  cognome?: string;
   email: string;
   role: Role;
 }
@@ -24,7 +25,7 @@ export interface Libro {
 export interface Autore {
   nome: string;
   eta: number | string;
-  stato: string;
+  stato?: string;
   bio: string;
   img?: string;
 }

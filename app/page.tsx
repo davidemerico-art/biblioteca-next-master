@@ -8,6 +8,7 @@ import { Role } from "@/types";
 
 export default function Login() {
   const [nome, setNome] = useState("");
+  const [cognome, setCognome] = useState("");
   const [email, setEmail] = useState("");
   const [role, setRole] = useState<Role>("user");
 
@@ -16,8 +17,7 @@ export default function Login() {
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
-    // Deleghiamo la persistenza al Service (SOLID: SRP)
-    AuthService.login({ nome, email, role });
+    AuthService.login({ nome, cognome, email, role });
 
     router.push("/biblioteca");
   }
@@ -52,18 +52,30 @@ export default function Login() {
 
         <div className="w-full max-w-md animate-fade-in-up">
           <h1 className="text-4xl font-bold tracking-tight mb-2 text-center text-[var(--color-text-primary)]">Accedi</h1>
-          <p className="text-center text-[var(--color-text-secondary)] mb-10">Inserisci i tuoi dati per entrare in BiblioSphere.</p>
+          <p className="text-center text-[var(--color-text-secondary)] mb-10">Crea un account o accedi a BiblioSphere.</p>
 
           <form onSubmit={handleSubmit} className="space-y-5">
-            <div>
-              <label>Nome</label>
-              <input 
-                type="text" 
-                value={nome} 
-                onChange={(e) => setNome(e.target.value)} 
-                placeholder="Il tuo nome"
-                required 
-              />
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label>Nome</label>
+                <input 
+                  type="text" 
+                  value={nome} 
+                  onChange={(e) => setNome(e.target.value)} 
+                  placeholder="Nome"
+                  required 
+                />
+              </div>
+              <div>
+                <label>Cognome</label>
+                <input 
+                  type="text" 
+                  value={cognome} 
+                  onChange={(e) => setCognome(e.target.value)} 
+                  placeholder="Cognome"
+                  required 
+                />
+              </div>
             </div>
 
             <div>
@@ -88,8 +100,8 @@ export default function Login() {
               </select>
             </div>
 
-            <button type="submit" className="w-full py-3.5 mt-4 text-[17px]">
-              Entra
+            <button type="submit" className="w-full py-4 mt-4 text-[17px]">
+              Entra in piattaforma
             </button>
           </form>
         </div>
