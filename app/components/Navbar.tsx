@@ -32,7 +32,7 @@ export default function Navbar() {
     AuthService.logout();
     setUser(null);
     setIsMobileMenuOpen(false);
-    router.push("/login");
+    router.push("/");
   };
 
   const toggleTheme = () => {
@@ -47,7 +47,7 @@ export default function Navbar() {
     }
   };
 
-  if (pathname === "/login" || pathname === "/") return null;
+  if (pathname === "/") return null;
 
   return (
     <>
@@ -92,7 +92,7 @@ export default function Navbar() {
                 </button>
               </>
             ) : (
-              <Link href="/login" className="text-[var(--color-text-primary)] font-medium hover:underline">Accedi</Link>
+              <Link href="/" className="text-[var(--color-text-primary)] font-medium hover:underline">Accedi</Link>
             )}
           </div>
 
@@ -139,7 +139,7 @@ export default function Navbar() {
             </div>
           ) : (
             <div className="mt-8">
-              <Link href="/login" className="block text-center bg-[var(--color-accent-base)] text-white py-4 rounded-full font-semibold">Accedi</Link>
+              <Link href="/" className="block text-center bg-[var(--color-accent-base)] text-white py-4 rounded-full font-semibold">Accedi</Link>
             </div>
           )}
         </div>

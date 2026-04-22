@@ -22,7 +22,7 @@ function MessaggiContent() {
   useEffect(() => {
     const user = AuthService.getCurrentUser();
     if (!user) {
-      router.push("/login");
+      router.push("/");
       return;
     }
     setCurrentUser(user);
