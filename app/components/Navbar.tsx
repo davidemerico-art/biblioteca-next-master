@@ -71,6 +71,7 @@ export default function Navbar() {
                 <Link href="/biblioteca" className={`text-[15px] ${pathname === "/biblioteca" ? "text-[var(--color-text-primary)] font-semibold" : "text-[var(--color-text-secondary)] font-medium hover:text-[var(--color-text-primary)] transition-colors"}`}>Biblioteca</Link>
                 <Link href="/miei-libri" className={`text-[15px] ${pathname === "/miei-libri" ? "text-[var(--color-text-primary)] font-semibold" : "text-[var(--color-text-secondary)] font-medium hover:text-[var(--color-text-primary)] transition-colors"}`}>I Miei Libri</Link>
                 <Link href="/cronologia" className={`text-[15px] ${pathname === "/cronologia" ? "text-[var(--color-text-primary)] font-semibold" : "text-[var(--color-text-secondary)] font-medium hover:text-[var(--color-text-primary)] transition-colors"}`}>Cronologia</Link>
+                <Link href="/messaggi" className={`text-[15px] ${pathname === "/messaggi" ? "text-[var(--color-text-primary)] font-semibold" : "text-[var(--color-text-secondary)] font-medium hover:text-[var(--color-text-primary)] transition-colors"}`}>Messaggi</Link>
                 
                 <div className="w-px h-6 bg-[var(--color-border)] mx-2"></div>
 
@@ -129,6 +130,7 @@ export default function Navbar() {
                 <Link href="/biblioteca" className="p-4 bg-[var(--color-surface)] rounded-xl border border-[var(--color-border)] text-[var(--color-text-primary)] font-medium active:scale-95 transition-transform">Biblioteca</Link>
                 <Link href="/miei-libri" className="p-4 bg-[var(--color-surface)] rounded-xl border border-[var(--color-border)] text-[var(--color-text-primary)] font-medium active:scale-95 transition-transform">I Miei Libri</Link>
                 <Link href="/cronologia" className="p-4 bg-[var(--color-surface)] rounded-xl border border-[var(--color-border)] text-[var(--color-text-primary)] font-medium active:scale-95 transition-transform">Cronologia</Link>
+                <Link href="/messaggi" className="p-4 bg-[var(--color-surface)] rounded-xl border border-[var(--color-border)] text-[var(--color-text-primary)] font-medium active:scale-95 transition-transform">Messaggi</Link>
               </div>
 
               <button onClick={handleLogout} className="mt-auto bg-red-500/10 text-red-500 w-full py-4 text-lg">

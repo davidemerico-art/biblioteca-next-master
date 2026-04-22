@@ -16,6 +16,19 @@ export class MessageService {
   }
 
   static getMessagesFromUser(userId: number): Message[] {
-    return this.getMessages().filter(m => m.from === "user" && m.userId === userId);
+    return this.getMessages()
+      .filter(m => 
+        (m.from === "user" && m.userId === userId) || 
+        (m.from === "admin" && m.toUserId === userId)
+      )
+      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+  }
+
+  static getUsersWithMessages(): number[] {
+    const messages = this.getMessages();
+    const userIds = messages
+      .map(m => m.userId || m.toUserId)
+      .filter(id => id !== undefined) as number[];
+    return Array.from(new Set(userIds));
   }
 }

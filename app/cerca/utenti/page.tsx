@@ -37,33 +37,11 @@ export default function Utenti() {
     );
   }, [search, users]);
 
-  const sendMessage = (userId: number | undefined) => {
-    if (!userId) return;
-    const text = prompt("Scrivi il messaggio per l'utente:");
-    if (!text) return;
 
-    MessageService.sendMessage({
-      toUserId: userId,
-      from: "admin",
-      text,
-      date: new Date().toISOString(),
-    });
-
-    setMessages(MessageService.getMessages());
-    alert("Messaggio inviato con successo!");
-  };
 
   const readMessages = (userId: number | undefined) => {
     if (!userId) return;
-    const userMessages = MessageService.getMessagesFromUser(userId);
-
-    if (userMessages.length === 0) {
-      alert("Nessun messaggio da questo utente");
-      return;
-    }
-
-    const testo = userMessages.map((m) => ` ✉ ${m.text}`).join("\n");
-    alert(testo);
+    router.push(`/messaggi?userId=${userId}`);
   };
 
   const hasMessages = (userId: number | undefined) => {
@@ -111,15 +89,10 @@ export default function Utenti() {
                   <td className="px-6 py-4 font-medium text-[var(--color-text-primary)]">{u.cognome || "—"}</td>
                   <td className="px-6 py-4 text-[var(--color-text-secondary)]">{u.email}</td>
                   <td className="px-6 py-4 text-center">
-                    <div className="flex justify-center gap-2">
-                      <button onClick={() => sendMessage(u.id)} className="p-2 w-10 h-10 rounded-full bg-[var(--color-accent-dim)] text-[var(--color-accent-base)] hover:bg-[var(--color-accent-base)] hover:text-white" title="Invia messaggio">
-                        <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
-                      </button>
-                      <button onClick={() => readMessages(u.id)} className="relative p-2 w-10 h-10 rounded-full btn-ghost" title="Leggi messaggi">
+                      <button onClick={() => readMessages(u.id)} className="relative p-2 w-10 h-10 rounded-full btn-ghost" title="Messaggi">
                         <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
                         {hasMessages(u.id) && <span className="absolute top-0 right-0 w-3 h-3 bg-red-500 border-2 border-[var(--color-surface)] rounded-full"></span>}
                       </button>
-                    </div>
                   </td>
                 </tr>
               ))
@@ -140,15 +113,10 @@ export default function Utenti() {
                 <p className="text-sm text-[var(--color-text-secondary)]">{u.email}</p>
                 <div className="inline-block mt-2 badge bg-[var(--color-surface-elev)] text-[var(--color-text-muted)] border border-[var(--color-border)]">{u.role}</div>
               </div>
-              <div className="flex gap-2 mt-2 pt-4 border-t border-[var(--color-border)]">
-                <button onClick={() => sendMessage(u.id)} className="flex-1 py-3 text-sm bg-[var(--color-accent-dim)] text-[var(--color-accent-base)] hover:bg-[var(--color-accent-base)] hover:text-white">
-                  Scrivi
-                </button>
                 <button onClick={() => readMessages(u.id)} className="flex-1 py-3 text-sm btn-ghost relative border-none bg-[var(--color-surface-hover)]">
-                  Leggi
+                  Messaggi
                   {hasMessages(u.id) && <span className="absolute top-2 right-2 w-2.5 h-2.5 bg-red-500 rounded-full"></span>}
                 </button>
-              </div>
             </div>
           ))
         )}
