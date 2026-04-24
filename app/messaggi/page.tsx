@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect, useState, useRef, Suspense } from "react";
@@ -97,6 +98,23 @@ function MessaggiContent() {
     }
   };
 
+  const handleDeleteMessage = (messageId: string | undefined) => {
+    if (!messageId) return;
+    if (confirm("Sei sicuro di voler eliminare questo messaggio?")) {
+      MessageService.deleteMessage(messageId);
+      const targetUserId = isAdmin ? selectedUser?.id : currentUser?.id;
+      if (targetUserId) {
+        loadMessages(targetUserId as number);
+      }
+
+      if (isAdmin) {
+        const ids = MessageService.getUsersWithMessages();
+        const messagedUsers = allUsers.filter(u => ids.includes(u.id as number));
+        setUsersWithMessages(messagedUsers);
+      }
+    }
+  };
+
   if (loading) return <div className="flex items-center justify-center min-h-screen">Caricamento...</div>;
 
   const isAdmin = currentUser?.role === "admin";
@@ -173,16 +191,27 @@ function MessaggiContent() {
               const isOwnMessage = (isAdmin && msg.from === "admin") || (!isAdmin && msg.from === "user");
               return (
                 <div 
-                  key={index} 
-                  className={`flex flex-col max-w-[80%] ${isOwnMessage ? "self-end items-end" : "self-start items-start"} animate-fade-in-up`}
+                  key={msg.id || index} 
+                  className={`flex flex-col max-w-[80%] group ${isOwnMessage ? "self-end items-end" : "self-start items-start"} animate-fade-in-up`}
                   style={{ animationDelay: `${index * 50}ms` }}
                 >
-                  <div className={`px-5 py-3 rounded-2xl text-[15px] shadow-sm ${
-                    isOwnMessage 
-                      ? "bg-[var(--color-accent-base)] text-white rounded-tr-none" 
-                      : "bg-[var(--color-surface)] text-[var(--color-text-primary)] border border-[var(--color-border)]/50 rounded-tl-none"
-                  }`}>
-                    {msg.text}
+                  <div className="flex items-center gap-2">
+                    {isOwnMessage && (
+                      <button 
+                        onClick={() => handleDeleteMessage(msg.id)}
+                        className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 text-[var(--color-text-muted)] hover:text-red-500 hover:bg-red-50 rounded-lg"
+                        title="Elimina messaggio"
+                      >
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                      </button>
+                    )}
+                    <div className={`px-5 py-3 rounded-2xl text-[15px] shadow-sm ${
+                      isOwnMessage 
+                        ? "bg-[var(--color-accent-base)] text-white rounded-tr-none" 
+                        : "bg-[var(--color-surface)] text-[var(--color-text-primary)] border border-[var(--color-border)]/50 rounded-tl-none"
+                    }`}>
+                      {msg.text}
+                    </div>
                   </div>
                   <span className="text-[10px] text-[var(--color-text-muted)] mt-1.5 font-medium px-1">
                     {new Date(msg.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}

@@ -8,7 +8,16 @@ export class MessageService {
 
   static sendMessage(message: Message): void {
     const messages = this.getMessages();
-    StorageService.set("messages", [...messages, message]);
+    const msgWithId = {
+      ...message,
+      id: message.id || Date.now().toString() + Math.random().toString(36).substr(2, 9)
+    };
+    StorageService.set("messages", [...messages, msgWithId]);
+  }
+
+  static deleteMessage(messageId: string): void {
+    const messages = this.getMessages();
+    StorageService.set("messages", messages.filter(m => m.id !== messageId));
   }
 
   static hasUnreadFromUser(userId: number): boolean {

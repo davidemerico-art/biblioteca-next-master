@@ -40,6 +40,7 @@ export interface Recensione {
 }
 
 export interface Message {
+  id?: string;
   toUserId?: number;
   from: "admin" | "user";
   text: string;
