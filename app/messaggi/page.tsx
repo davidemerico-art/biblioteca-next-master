@@ -100,11 +100,26 @@ function MessaggiContent() {
 
   const handleDeleteMessage = (messageId: string | undefined) => {
     if (!messageId) return;
+    
+    const msgToDelete = messages.find(m => m.id === messageId);
+    if (!msgToDelete) return;
+
+    const isActuallyOwn = isAdmin 
+      ? (msgToDelete.from === "admin") 
+      : (msgToDelete.from === "user" && msgToDelete.userId === currentUser?.id);
+
+    if (!isActuallyOwn) return;
+
     if (confirm("Sei sicuro di voler eliminare questo messaggio?")) {
       MessageService.deleteMessage(messageId);
+      
+      // Get the correct user ID to reload the chat
       const targetUserId = isAdmin ? selectedUser?.id : currentUser?.id;
-      if (targetUserId) {
-        loadMessages(targetUserId as number);
+      
+      if (targetUserId !== undefined) {
+        // Force reload from service
+        const updatedMessages = MessageService.getMessagesFromUser(targetUserId);
+        setMessages(updatedMessages);
       }
 
       if (isAdmin) {
@@ -188,7 +203,9 @@ function MessaggiContent() {
             </div>
           ) : (
             messages.map((msg, index) => {
-              const isOwnMessage = (isAdmin && msg.from === "admin") || (!isAdmin && msg.from === "user");
+              const isOwnMessage = isAdmin 
+                ? (msg.from === "admin") 
+                : (msg.from === "user" && msg.userId === currentUser?.id);
               return (
                 <div 
                   key={msg.id || index} 

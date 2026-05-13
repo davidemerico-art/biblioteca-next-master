@@ -3,7 +3,25 @@ import { StorageService } from "./StorageService";
 
 export class MessageService {
   static getMessages(): Message[] {
-    return StorageService.get<Message[]>("messages", []);
+    const messages = StorageService.get<Message[]>("messages", []);
+    let needsUpdate = false;
+    
+    const messagesWithIds = messages.map((m, index) => {
+      if (!m.id) {
+        needsUpdate = true;
+        return {
+          ...m,
+          id: `msg-${Date.now()}-${index}-${Math.random().toString(36).substr(2, 5)}`
+        };
+      }
+      return m;
+    });
+
+    if (needsUpdate) {
+      StorageService.set("messages", messagesWithIds);
+    }
+    
+    return messagesWithIds;
   }
 
   static sendMessage(message: Message): void {
