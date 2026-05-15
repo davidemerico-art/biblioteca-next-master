@@ -114,7 +114,7 @@ export default function Utenti() {
                 <div className="inline-block mt-2 badge bg-[var(--color-surface-elev)] text-[var(--color-text-muted)] border border-[var(--color-border)]">{u.role}</div>
               </div>
                 <button onClick={() => readMessages(u.id)} className="flex-1 py-3 text-sm btn-ghost relative border-none bg-[var(--color-surface-hover)]">
-                  Messaggi
+                  Messaggiiiii
                   {hasMessages(u.id) && <span className="absolute top-2 right-2 w-2.5 h-2.5 bg-red-500 rounded-full"></span>}
                 </button>
             </div>
